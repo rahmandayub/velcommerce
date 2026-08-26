@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -120,5 +121,59 @@ class Product extends Model
         }
 
         return (int) $this->stock;
+    }
+
+    /**
+     * Scope products for the public catalog.
+     *
+     * @param  array{q?: string|null, category?: string|null, min_price?: mixed, max_price?: mixed, sort?: string|null}  $filters
+     */
+    public function scopeFiltered(Builder $query, array $filters): Builder
+    {
+        $query->where('is_active', true);
+
+        if (! empty($filters['q'])) {
+            $q = (string) $filters['q'];
+            $query->where(function (Builder $inner) use ($q): void {
+                $inner->where('name', 'like', "%{$q}%")
+                    ->orWhere('sku', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%");
+            });
+        }
+
+        if (! empty($filters['category'])) {
+            $slug = (string) $filters['category'];
+            $category = Category::query()->where('slug', $slug)->first();
+
+            if ($category) {
+                $ids = Category::query()
+                    ->where('id', $category->id)
+                    ->orWhere('parent_id', $category->id)
+                    ->pluck('id')
+                    ->all();
+
+                $query->whereIn('category_id', $ids);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        if (isset($filters['min_price']) && $filters['min_price'] !== '' && $filters['min_price'] !== null) {
+            $query->where('price', '>=', (float) $filters['min_price']);
+        }
+
+        if (isset($filters['max_price']) && $filters['max_price'] !== '' && $filters['max_price'] !== null) {
+            $query->where('price', '<=', (float) $filters['max_price']);
+        }
+
+        $sort = $filters['sort'] ?? 'latest';
+
+        match ($sort) {
+            'price_asc' => $query->orderBy('price', 'asc'),
+            'price_desc' => $query->orderBy('price', 'desc'),
+            default => $query->latest('id'),
+        };
+
+        return $query;
     }
 }

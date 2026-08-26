@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImage extends Model
 {
@@ -38,5 +39,13 @@ class ProductImage extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+    }
+
+    /**
+     * Absolute URL of the image on the public disk.
+     */
+    public function getUrlAttribute(): string
+    {
+        return $this->path !== null ? Storage::disk('public')->url($this->path) : '';
     }
 }
