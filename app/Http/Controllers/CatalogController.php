@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -68,11 +69,20 @@ class CatalogController extends Controller
             ? $request->user()->wishlists()->pluck('product_id')->all()
             : [];
 
+        $seo = [
+            'title' => 'Katalog Produk — Velcommerce',
+            'description' => 'Temukan ribuan produk pilihan — fashion, elektronik, hingga kebutuhan harian dengan harga terbaik di Velcommerce.',
+            'canonical' => route('products.index', $request->only(['q', 'category', 'min_price', 'max_price', 'sort'])),
+            'image' => null,
+            'type' => 'website',
+        ];
+
         return Inertia::render('products/index', [
             'products' => $products,
             'categories' => $categories,
             'filters' => $filters,
             'wishlistIds' => $wishlistIds,
+            'seo' => $seo,
         ]);
     }
 
@@ -115,6 +125,80 @@ class CatalogController extends Controller
                     'name' => $review->user?->name,
                 ],
             ]);
+
+        $seoTitle = $product->seo_title;
+        $seoDescription = $product->seo_description;
+        $canonical = route('products.show', $product->slug);
+        $ogImage = $product->images->sortBy('sort_order')->first()?->url;
+
+        $seo = [
+            'title' => $seoTitle,
+            'description' => $seoDescription,
+            'canonical' => $canonical,
+            'image' => $ogImage,
+            'type' => 'product',
+        ];
+
+        $priceCurrency = config('shop.currency', 'IDR');
+        $availability = $product->total_stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
+        $cleanDescription = trim(preg_replace('/\s+/', ' ', strip_tags($product->description)) ?? '');
+
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Product',
+            'name' => $product->name,
+            'description' => Str::limit($cleanDescription, 500, ''),
+            'sku' => $product->sku,
+            'image' => $product->images->sortBy('sort_order')->pluck('url')->values()->all(),
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => number_format((float) $product->price, 2, '.', ''),
+                'priceCurrency' => $priceCurrency,
+                'availability' => $availability,
+                'url' => $canonical,
+            ],
+            'aggregateRating' => $product->reviews_count > 0 ? [
+                '@type' => 'AggregateRating',
+                'ratingValue' => round((float) ($product->reviews_avg_rating ?? 0), 2),
+                'reviewCount' => (int) $product->reviews_count,
+            ] : null,
+        ];
+
+        // Remove null aggregateRating for cleaner JSON-LD
+        if ($jsonLd['aggregateRating'] === null) {
+            unset($jsonLd['aggregateRating']);
+        }
+
+        $breadcrumbLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => array_values(array_filter([
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Home',
+                    'item' => route('home'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'Products',
+                    'item' => route('products.index'),
+                ],
+                $product->category ? [
+                    '@type' => 'ListItem',
+                    'position' => 3,
+                    'name' => $product->category->name,
+                    'item' => route('products.index', ['category' => $product->category->slug]),
+                ] : null,
+                [
+                    '@type' => 'ListItem',
+                    'position' => $product->category ? 4 : 3,
+                    'name' => $product->name,
+                    'item' => $canonical,
+                ],
+            ])),
+        ];
 
         return Inertia::render('products/show', [
             'product' => [
@@ -161,6 +245,9 @@ class CatalogController extends Controller
                     'body' => $userReview->body,
                 ] : null,
             ],
+            'seo' => $seo,
+            'jsonLd' => $jsonLd,
+            'breadcrumbLd' => $breadcrumbLd,
         ]);
     }
 }

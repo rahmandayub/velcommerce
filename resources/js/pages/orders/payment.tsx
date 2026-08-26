@@ -37,16 +37,22 @@ export default function OrderPayment({ order }: Props) {
                     <CardHeader className="text-center">
                         <CardTitle>Mock Payment Gateway</CardTitle>
                         <p className="text-sm text-muted-foreground">
-                            Ini adalah halaman pembayaran mock (hanya di local/testing/staging).
-                            Pilih outcome untuk mensimulasikan callback gateway.
+                            Ini adalah halaman pembayaran mock (hanya di
+                            local/testing/staging). Pilih outcome untuk
+                            mensimulasikan callback gateway.
                         </p>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="rounded-lg border bg-muted p-4 text-center">
-                            <p className="font-mono text-sm">{order.order_number}</p>
-                            <p className="mt-1 text-2xl font-bold">{formatIDR(order.total)}</p>
+                            <p className="font-mono text-sm">
+                                {order.order_number}
+                            </p>
+                            <p className="mt-1 text-2xl font-bold">
+                                {formatIDR(order.total)}
+                            </p>
                             <p className="text-xs text-muted-foreground">
-                                Status: {order.status} · Payment: {order.payment_status}
+                                Status: {order.status} · Payment:{' '}
+                                {order.payment_status}
                             </p>
                         </div>
 
@@ -69,9 +75,10 @@ export default function OrderPayment({ order }: Props) {
                         </div>
 
                         <p className="text-center text-xs text-muted-foreground">
-                            Klik Pay untuk mengubah status menjadi <strong>paid</strong> dan
-                            melanjutkan ke tracking pesanan. Klik Fail untuk mensimulasikan
-                            pembayaran gagal.
+                            Klik Pay untuk mengubah status menjadi{' '}
+                            <strong>paid</strong> dan melanjutkan ke tracking
+                            pesanan. Klik Fail untuk mensimulasikan pembayaran
+                            gagal.
                         </p>
                     </CardContent>
                 </Card>

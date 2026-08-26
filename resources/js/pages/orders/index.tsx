@@ -35,8 +35,13 @@ export default function OrdersIndex({ orders }: Props) {
 
                 {orders.data.length === 0 ? (
                     <Card className="p-12 text-center">
-                        <p className="text-muted-foreground">Belum ada pesanan.</p>
-                        <Link href="/products" className="mt-4 inline-block text-sm text-primary hover:underline">
+                        <p className="text-muted-foreground">
+                            Belum ada pesanan.
+                        </p>
+                        <Link
+                            href="/products"
+                            className="mt-4 inline-block text-sm text-primary hover:underline"
+                        >
                             Mulai belanja
                         </Link>
                     </Card>
@@ -54,7 +59,9 @@ export default function OrdersIndex({ orders }: Props) {
                                         </Link>
                                         <p className="text-xs text-muted-foreground">
                                             {order.created_at
-                                                ? new Date(order.created_at).toLocaleString('id-ID')
+                                                ? new Date(
+                                                      order.created_at,
+                                                  ).toLocaleString('id-ID')
                                                 : '—'}{' '}
                                             · {order.items_count} item
                                         </p>
@@ -63,7 +70,9 @@ export default function OrdersIndex({ orders }: Props) {
                                         </p>
                                     </div>
                                     <div className="flex flex-col items-end gap-2">
-                                        <OrderStatusBadge status={order.status} />
+                                        <OrderStatusBadge
+                                            status={order.status}
+                                        />
                                         <Link
                                             href={`/orders/${order.order_number}`}
                                             className="text-xs text-primary hover:underline"

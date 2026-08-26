@@ -22,20 +22,22 @@ type ProductCardProps = {
     isWishlisted?: boolean;
 };
 
-export function ProductCard({ product, isWishlisted = false }: ProductCardProps) {
+export function ProductCard({
+    product,
+    isWishlisted = false,
+}: ProductCardProps) {
     const outOfStock = product.total_stock <= 0;
     const hasRating = (product.reviews_count ?? 0) > 0;
 
     return (
         <Card className="group relative overflow-hidden transition hover:shadow-lg">
-            <div className="absolute right-2 top-2 z-10">
-                <WishlistButton productId={product.id} isWishlisted={isWishlisted} />
+            <div className="absolute top-2 right-2 z-10">
+                <WishlistButton
+                    productId={product.id}
+                    isWishlisted={isWishlisted}
+                />
             </div>
-            <Link
-                href={`/products/${product.slug}`}
-                className="block"
-                prefetch
-            >
+            <Link href={`/products/${product.slug}`} className="block" prefetch>
                 <div className="relative aspect-square overflow-hidden bg-muted">
                     {product.image ? (
                         <img
@@ -43,6 +45,9 @@ export function ProductCard({ product, isWishlisted = false }: ProductCardProps)
                             alt={product.name}
                             className="h-full w-full object-cover transition group-hover:scale-105"
                             loading="lazy"
+                            decoding="async"
+                            width={400}
+                            height={400}
                         />
                     ) : (
                         <div className="flex h-full w-full items-center justify-center text-muted-foreground">
@@ -50,7 +55,9 @@ export function ProductCard({ product, isWishlisted = false }: ProductCardProps)
                         </div>
                     )}
                     {product.is_featured && (
-                        <Badge className="absolute top-2 left-2">Featured</Badge>
+                        <Badge className="absolute top-2 left-2">
+                            Featured
+                        </Badge>
                     )}
                     {outOfStock && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-sm font-medium text-white">
@@ -59,7 +66,7 @@ export function ProductCard({ product, isWishlisted = false }: ProductCardProps)
                     )}
                 </div>
                 <CardContent className="space-y-2 p-4">
-                    <h3 className="line-clamp-2 text-sm font-medium leading-snug">
+                    <h3 className="line-clamp-2 text-sm leading-snug font-medium">
                         {product.name}
                     </h3>
                     {hasRating && (

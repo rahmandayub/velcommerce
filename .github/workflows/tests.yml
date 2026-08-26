@@ -25,14 +25,26 @@ jobs:
           php-version: '8.5'
           tools: composer:v2
           coverage: none
+          extensions: gd
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
+          cache: 'npm'
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
 
       - name: Setup Application
         run: composer setup
+
+      - name: Verify SSR Build
+        run: npm run build:ssr
 
       - name: Run CI Checks
         run: composer ci:check

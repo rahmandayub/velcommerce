@@ -65,6 +65,24 @@ class Product extends Model
         ];
     }
 
+    public function getSeoTitleAttribute(): string
+    {
+        $title = $this->meta_title ?: $this->name;
+
+        return Str::limit(trim((string) $title), 60, '');
+    }
+
+    public function getSeoDescriptionAttribute(): string
+    {
+        $desc = $this->meta_description
+            ?: $this->short_description
+            ?: Str::limit(strip_tags((string) $this->description), 160, '');
+
+        $desc = trim(preg_replace('/\s+/', ' ', (string) $desc) ?? '');
+
+        return Str::limit($desc, 160, '');
+    }
+
     protected static function booted(): void
     {
         static::creating(function (Product $product): void {

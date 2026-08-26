@@ -52,7 +52,9 @@ export default function CartIndex({ items, subtotal }: Props) {
 
                 {items.length === 0 ? (
                     <Card className="p-12 text-center">
-                        <p className="text-muted-foreground">Keranjang masih kosong.</p>
+                        <p className="text-muted-foreground">
+                            Keranjang masih kosong.
+                        </p>
                         <Button asChild className="mt-4">
                             <Link href="/products">Jelajahi Katalog</Link>
                         </Button>
@@ -67,14 +69,20 @@ export default function CartIndex({ items, subtotal }: Props) {
                                             {item.image ? (
                                                 <img
                                                     src={item.image}
-                                                    alt={item.product_name ?? ''}
+                                                    alt={
+                                                        item.product_name ?? ''
+                                                    }
                                                     className="h-full w-full object-cover"
                                                 />
                                             ) : null}
                                         </div>
                                         <div className="flex flex-1 flex-col gap-1">
                                             <Link
-                                                href={item.product_slug ? `/products/${item.product_slug}` : '#'}
+                                                href={
+                                                    item.product_slug
+                                                        ? `/products/${item.product_slug}`
+                                                        : '#'
+                                                }
                                                 className="text-sm font-medium hover:underline"
                                             >
                                                 {item.product_name}
@@ -94,7 +102,12 @@ export default function CartIndex({ items, subtotal }: Props) {
                                                     max={item.stock}
                                                     value={item.quantity}
                                                     onChange={(e) =>
-                                                        updateQty(item, parseInt(e.target.value) || 1)
+                                                        updateQty(
+                                                            item,
+                                                            parseInt(
+                                                                e.target.value,
+                                                            ) || 1,
+                                                        )
                                                     }
                                                     className="w-20"
                                                 />
@@ -123,7 +136,9 @@ export default function CartIndex({ items, subtotal }: Props) {
 
                         <Card className="h-fit">
                             <CardHeader>
-                                <CardTitle className="text-base">Ringkasan Belanja</CardTitle>
+                                <CardTitle className="text-base">
+                                    Ringkasan Belanja
+                                </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 <div className="flex justify-between text-sm">
@@ -139,9 +154,15 @@ export default function CartIndex({ items, subtotal }: Props) {
                                     <span>{formatIDR(total)}</span>
                                 </div>
                                 <Button asChild className="w-full" size="lg">
-                                    <Link href="/checkout/address">Checkout</Link>
+                                    <Link href="/checkout/address">
+                                        Checkout
+                                    </Link>
                                 </Button>
-                                <Button variant="outline" asChild className="w-full">
+                                <Button
+                                    variant="outline"
+                                    asChild
+                                    className="w-full"
+                                >
                                     <Link href="/products">Lanjut Belanja</Link>
                                 </Button>
                             </CardContent>

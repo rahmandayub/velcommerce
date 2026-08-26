@@ -34,7 +34,9 @@ export default function ProductReviews({ product, reviews }: Props) {
                 >
                     ← Kembali ke {product.name}
                 </Link>
-                <h1 className="mt-2 text-2xl font-bold">Ulasan {product.name}</h1>
+                <h1 className="mt-2 text-2xl font-bold">
+                    Ulasan {product.name}
+                </h1>
 
                 <div className="mt-6 space-y-2">
                     {reviews.data.length === 0 ? (
@@ -56,7 +58,9 @@ export default function ProductReviews({ product, reviews }: Props) {
 
                 <div className="mt-6">
                     <Button asChild>
-                        <Link href={`/products/${product.slug}`}>Lihat Produk</Link>
+                        <Link href={`/products/${product.slug}`}>
+                            Lihat Produk
+                        </Link>
                     </Button>
                 </div>
             </div>

@@ -1,5 +1,12 @@
 import { Head, router } from '@inertiajs/react';
-import { AlertTriangle, DollarSign, Package, ShoppingCart, Star, TrendingUp } from 'lucide-react';
+import {
+    AlertTriangle,
+    DollarSign,
+    Package,
+    ShoppingCart,
+    Star,
+    TrendingUp,
+} from 'lucide-react';
 import { SalesChart } from '@/components/admin/sales-chart';
 import { StatCard } from '@/components/admin/stat-card';
 import { Button } from '@/components/ui/button';
@@ -64,7 +71,11 @@ export default function AdminDashboard({
         router.get(
             '/admin',
             { range: value },
-            { preserveState: true, preserveScroll: true, only: ['chartData', 'range', 'kpis'] },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['chartData', 'range', 'kpis'],
+            },
         );
     }
 
@@ -89,7 +100,9 @@ export default function AdminDashboard({
                             <Button
                                 key={r.value}
                                 size="sm"
-                                variant={r.value === range ? 'default' : 'outline'}
+                                variant={
+                                    r.value === range ? 'default' : 'outline'
+                                }
                                 onClick={() => changeRange(r.value)}
                             >
                                 {r.label}
@@ -133,7 +146,9 @@ export default function AdminDashboard({
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">Grafik Penjualan</CardTitle>
+                        <CardTitle className="text-base">
+                            Grafik Penjualan
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <SalesChart data={chartData} />
@@ -143,7 +158,9 @@ export default function AdminDashboard({
                 <div className="grid gap-6 lg:grid-cols-2">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">Produk Terlaris</CardTitle>
+                            <CardTitle className="text-base">
+                                Produk Terlaris
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {topProducts.length === 0 ? (
@@ -152,7 +169,10 @@ export default function AdminDashboard({
                                 </p>
                             ) : (
                                 topProducts.map((p, i) => (
-                                    <div key={p.product_id} className="flex items-center gap-3">
+                                    <div
+                                        key={p.product_id}
+                                        className="flex items-center gap-3"
+                                    >
                                         <span className="w-5 text-sm font-medium text-muted-foreground">
                                             {i + 1}
                                         </span>
@@ -166,7 +186,9 @@ export default function AdminDashboard({
                                             <div className="h-10 w-10 rounded bg-muted" />
                                         )}
                                         <div className="flex-1">
-                                            <p className="text-sm font-medium">{p.name}</p>
+                                            <p className="text-sm font-medium">
+                                                {p.name}
+                                            </p>
                                             <p className="text-xs text-muted-foreground">
                                                 {p.qty} terjual
                                             </p>
@@ -182,7 +204,9 @@ export default function AdminDashboard({
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">Stok Rendah</CardTitle>
+                            <CardTitle className="text-base">
+                                Stok Rendah
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {lowStock.length === 0 ? (
@@ -191,7 +215,10 @@ export default function AdminDashboard({
                                 </p>
                             ) : (
                                 lowStock.map((item) => (
-                                    <div key={item.id} className="rounded-md border p-3">
+                                    <div
+                                        key={item.id}
+                                        className="rounded-md border p-3"
+                                    >
                                         <div className="flex items-center gap-3">
                                             {item.image ? (
                                                 <img
@@ -210,8 +237,14 @@ export default function AdminDashboard({
                                                     Stok produk: {item.stock}
                                                 </p>
                                             </div>
-                                            <Button size="sm" variant="outline" asChild>
-                                                <a href={item.edit_url}>Restok</a>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
+                                                <a href={item.edit_url}>
+                                                    Restok
+                                                </a>
                                             </Button>
                                         </div>
                                         {item.variants.length > 0 && (

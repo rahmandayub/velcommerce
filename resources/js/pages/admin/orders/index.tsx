@@ -45,15 +45,24 @@ export default function AdminOrdersIndex({ orders }: Props) {
                                 <thead className="border-b bg-muted/50">
                                     <tr>
                                         <th className="p-3 text-left">Order</th>
-                                        <th className="p-3 text-left">Customer</th>
-                                        <th className="p-3 text-center">Status</th>
-                                        <th className="p-3 text-right">Total</th>
+                                        <th className="p-3 text-left">
+                                            Customer
+                                        </th>
+                                        <th className="p-3 text-center">
+                                            Status
+                                        </th>
+                                        <th className="p-3 text-right">
+                                            Total
+                                        </th>
                                         <th className="p-3 text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {orders.data.map((o) => (
-                                        <tr key={o.id} className="border-b last:border-0">
+                                        <tr
+                                            key={o.id}
+                                            className="border-b last:border-0"
+                                        >
                                             <td className="p-3">
                                                 <Link
                                                     href={`/admin/orders/${o.id}`}
@@ -63,22 +72,42 @@ export default function AdminOrdersIndex({ orders }: Props) {
                                                 </Link>
                                                 <p className="text-xs text-muted-foreground">
                                                     {o.created_at
-                                                        ? new Date(o.created_at).toLocaleString('id-ID')
+                                                        ? new Date(
+                                                              o.created_at,
+                                                          ).toLocaleString(
+                                                              'id-ID',
+                                                          )
                                                         : '—'}{' '}
                                                     · {o.items_count} item
                                                 </p>
                                             </td>
                                             <td className="p-3">
-                                                <p className="text-sm">{o.user?.name ?? '—'}</p>
-                                                <p className="text-xs text-muted-foreground">{o.user?.email ?? ''}</p>
+                                                <p className="text-sm">
+                                                    {o.user?.name ?? '—'}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {o.user?.email ?? ''}
+                                                </p>
                                             </td>
                                             <td className="p-3 text-center">
-                                                <OrderStatusBadge status={o.status} />
+                                                <OrderStatusBadge
+                                                    status={o.status}
+                                                />
                                             </td>
-                                            <td className="p-3 text-right">{formatIDR(o.total)}</td>
                                             <td className="p-3 text-right">
-                                                <Button size="sm" variant="outline" asChild>
-                                                    <Link href={`/admin/orders/${o.id}`}>Detail</Link>
+                                                {formatIDR(o.total)}
+                                            </td>
+                                            <td className="p-3 text-right">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={`/admin/orders/${o.id}`}
+                                                    >
+                                                        Detail
+                                                    </Link>
                                                 </Button>
                                             </td>
                                         </tr>

@@ -14,7 +14,9 @@ export function StatCard({ title, value, hint, icon }: StatCardProps) {
                 <div>
                     <p className="text-sm text-muted-foreground">{title}</p>
                     <p className="mt-1 text-2xl font-bold">{value}</p>
-                    {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+                    {hint && (
+                        <p className="text-xs text-muted-foreground">{hint}</p>
+                    )}
                 </div>
                 {icon && <div className="text-muted-foreground">{icon}</div>}
             </CardContent>

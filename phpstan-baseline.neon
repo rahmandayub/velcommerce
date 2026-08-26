@@ -61,6 +61,12 @@ parameters:
 			path: app/Http/Requests/UpdateProductRequest.php
 
 		-
+			message: '#^Method App\\Models\\Coupon\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Coupon.php
+
+		-
 			message: '#^Cannot access property \$value on string\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -85,6 +91,12 @@ parameters:
 			path: app/Models/Order.php
 
 		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: app/Models/Product.php
+
+		-
 			message: '#^Method App\\Models\\Product\:\:scopeFiltered\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -107,6 +119,60 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: app/Models/ProductImage.php
+
+		-
+			message: '#^Method App\\Models\\Review\:\:scopeApproved\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Review.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/OrderPlacedNotification.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/OrderStatusUpdatedNotification.php
+
+		-
+			message: '#^Invalid array key type App\\Enums\\OrderStatus\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: app/Notifications/OrderStatusUpdatedNotification.php
+
+		-
+			message: '#^Invalid array key type App\\Enums\\OrderStatus\:\:Cancelled\.$#'
+			identifier: array.invalidKey
+			count: 1
+			path: app/Notifications/OrderStatusUpdatedNotification.php
+
+		-
+			message: '#^Invalid array key type App\\Enums\\OrderStatus\:\:Completed\.$#'
+			identifier: array.invalidKey
+			count: 1
+			path: app/Notifications/OrderStatusUpdatedNotification.php
+
+		-
+			message: '#^Invalid array key type App\\Enums\\OrderStatus\:\:Shipped\.$#'
+			identifier: array.invalidKey
+			count: 1
+			path: app/Notifications/OrderStatusUpdatedNotification.php
+
+		-
+			message: '#^Offset App\\Enums\\OrderStatus on non\-empty\-array\<mixed, array\{subject\: ''Pesanan Anda telah…'', line\: ''Pesanan Anda telah…''\}\|array\{subject\: ''Pesanan dibatalkan'', line\: ''Pesanan Anda telah…''\}\|array\{subject\: ''Pesanan telah…'', line\: ''Terima kasih\!…''\}\> on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Notifications/OrderStatusUpdatedNotification.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Notifications/PaymentStatusNotification.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -155,3 +221,33 @@ parameters:
 			identifier: nullsafe.neverNull
 			count: 1
 			path: app/Services/CheckoutService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\OrderItem\:\:\$qty\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DashboardService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\OrderItem\:\:\$revenue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DashboardService.php
+
+		-
+			message: '#^Method App\\Services\\DashboardService\:\:lowStock\(\) should return Illuminate\\Database\\Eloquent\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: int, name\: string, slug\: string, stock\: int, image\: string\|null, edit_url\: string, variants\: array\<int, array\{id\: mixed, name\: mixed, sku\: mixed, stock\: mixed\}\>\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/DashboardService.php
+
+		-
+			message: '#^Type array\<string, mixed\> in generic type Illuminate\\Database\\Eloquent\\Collection\<int, array\<string, mixed\>\> in PHPDoc tag @return is not subtype of template type TModel of Illuminate\\Database\\Eloquent\\Model of class Illuminate\\Database\\Eloquent\\Collection\.$#'
+			identifier: generics.notSubtype
+			count: 1
+			path: app/Services/DashboardService.php
+
+		-
+			message: '#^Call to an undefined method Faker\\Generator\:\:state\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/factories/AddressFactory.php

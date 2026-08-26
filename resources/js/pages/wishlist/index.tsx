@@ -76,7 +76,10 @@ export default function WishlistIndex({ items }: Props) {
                         {items.data.map((item) => (
                             <Card key={item.id}>
                                 <CardContent className="flex gap-4 p-4">
-                                    <Link href={`/products/${item.product.slug}`} className="shrink-0">
+                                    <Link
+                                        href={`/products/${item.product.slug}`}
+                                        className="shrink-0"
+                                    >
                                         {item.product.image ? (
                                             <img
                                                 src={item.product.image}
@@ -106,7 +109,10 @@ export default function WishlistIndex({ items }: Props) {
                                             {formatIDR(item.product.price)}
                                         </span>
                                         {!item.product.is_active && (
-                                            <Badge variant="destructive" className="mt-1 w-fit text-xs">
+                                            <Badge
+                                                variant="destructive"
+                                                className="mt-1 w-fit text-xs"
+                                            >
                                                 Tidak tersedia
                                             </Badge>
                                         )}
@@ -114,10 +120,13 @@ export default function WishlistIndex({ items }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="outline"
-                                                disabled={!item.product.is_active}
+                                                disabled={
+                                                    !item.product.is_active
+                                                }
                                                 onClick={() => moveToCart(item)}
                                             >
-                                                <ShoppingCart className="h-4 w-4" /> Keranjang
+                                                <ShoppingCart className="h-4 w-4" />{' '}
+                                                Keranjang
                                             </Button>
                                             <Button
                                                 size="sm"

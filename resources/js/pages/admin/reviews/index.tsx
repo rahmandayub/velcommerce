@@ -60,24 +60,32 @@ export default function AdminReviewsIndex({ reviews }: Props) {
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2">
                                             <div className="flex text-yellow-500">
-                                                {Array.from({ length: 5 }).map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`h-4 w-4 ${
-                                                            i < r.rating
-                                                                ? 'fill-yellow-400'
-                                                                : 'text-muted-foreground'
-                                                        }`}
-                                                    />
-                                                ))}
+                                                {Array.from({ length: 5 }).map(
+                                                    (_, i) => (
+                                                        <Star
+                                                            key={i}
+                                                            className={`h-4 w-4 ${
+                                                                i < r.rating
+                                                                    ? 'fill-yellow-400'
+                                                                    : 'text-muted-foreground'
+                                                            }`}
+                                                        />
+                                                    ),
+                                                )}
                                             </div>
                                             <span className="text-sm font-medium">
                                                 {r.title ?? 'Ulasan'}
                                             </span>
                                             <Badge
-                                                variant={r.is_approved ? 'default' : 'secondary'}
+                                                variant={
+                                                    r.is_approved
+                                                        ? 'default'
+                                                        : 'secondary'
+                                                }
                                             >
-                                                {r.is_approved ? 'Disetujui' : 'Menunggu'}
+                                                {r.is_approved
+                                                    ? 'Disetujui'
+                                                    : 'Menunggu'}
                                             </Badge>
                                         </div>
                                         {r.body && (
@@ -88,7 +96,9 @@ export default function AdminReviewsIndex({ reviews }: Props) {
                                         <p className="mt-1 text-xs text-muted-foreground">
                                             {r.user?.name ?? 'Pengguna'} —{' '}
                                             {r.product?.name ?? 'Produk'} ·{' '}
-                                            {new Date(r.created_at).toLocaleDateString('id-ID')}
+                                            {new Date(
+                                                r.created_at,
+                                            ).toLocaleDateString('id-ID')}
                                         </p>
                                     </div>
                                     <Button

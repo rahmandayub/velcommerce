@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -259,8 +260,10 @@ class ProductController extends Controller
         $existingCount = $product->images()->count();
         $isFirst = $existingCount === 0;
 
+        $imageService = app(ImageService::class);
+
         foreach ((array) $files as $index => $file) {
-            $path = $file->store('products', 'public');
+            $path = $imageService->storeOptimized($file, 'products');
 
             $product->images()->create([
                 'path' => $path,
