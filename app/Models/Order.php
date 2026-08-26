@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +15,9 @@ use LogicException;
 
 class Order extends Model
 {
+    /** @use HasFactory<OrderFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'address_id',
@@ -26,6 +31,9 @@ class Order extends Model
         'shipping_cost',
         'subtotal',
         'discount',
+        'coupon_id',
+        'coupon_code',
+        'coupon_discount',
         'tax',
         'total',
         'notes',
@@ -43,6 +51,8 @@ class Order extends Model
             'shipping_cost' => 'decimal:2',
             'subtotal' => 'decimal:2',
             'discount' => 'decimal:2',
+            'coupon_id' => 'integer',
+            'coupon_discount' => 'decimal:2',
             'tax' => 'decimal:2',
             'total' => 'decimal:2',
             'payment_payload' => 'array',
@@ -76,6 +86,14 @@ class Order extends Model
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
+    }
+
+    /**
+     * @return BelongsTo<Coupon, $this>
+     */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     /**

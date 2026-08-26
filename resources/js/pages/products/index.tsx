@@ -46,6 +46,7 @@ type Paginated<T> = {
 type Props = {
     products: Paginated<Product>;
     categories: Category[];
+    wishlistIds?: number[];
     filters: {
         q?: string;
         category?: string;
@@ -55,7 +56,7 @@ type Props = {
     };
 };
 
-export default function ProductsIndex({ products, categories, filters }: Props) {
+export default function ProductsIndex({ products, categories, filters, wishlistIds = [] }: Props) {
     const [q, setQ] = useState(filters.q ?? '');
     const [minPrice, setMinPrice] = useState(filters.min_price ?? '');
     const [maxPrice, setMaxPrice] = useState(filters.max_price ?? '');
@@ -257,7 +258,11 @@ params.sort = next.sort;
                                 </p>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     {products.data.map((p) => (
-                                        <ProductCard key={p.id} product={p} />
+                                        <ProductCard
+                                            key={p.id}
+                                            product={p}
+                                            isWishlisted={wishlistIds.includes(p.id)}
+                                        />
                                     ))}
                                 </div>
                                 <Pagination links={products.links} />

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\PaymentGateway;
 use App\Enums\OrderStatus;
 use App\Models\Order;
+use App\Notifications\OrderStatusUpdatedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -135,6 +136,8 @@ class OrderController extends Controller
         if (! $order->cancel()) {
             return back()->with('error', 'Order cannot be cancelled at this stage.');
         }
+
+        $order->user->notify(new OrderStatusUpdatedNotification($order, OrderStatus::Cancelled));
 
         return redirect()->route('orders.show', ['order' => $order->order_number])
             ->with('success', 'Order cancelled. Stock has been restored.');

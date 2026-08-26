@@ -28,11 +28,49 @@ test('core tables exist', function (): void {
         'model_has_roles',
         'model_has_permissions',
         'role_has_permissions',
+        'reviews',
+        'wishlists',
+        'coupons',
+        'coupon_usages',
     ];
 
     foreach ($tables as $table) {
         expect(Schema::hasTable($table))->toBeTrue("Table {$table} should exist");
     }
+});
+
+test('reviews table has expected columns', function (): void {
+    expect(Schema::hasColumns('reviews', [
+        'id', 'user_id', 'product_id', 'order_id', 'rating',
+        'title', 'body', 'is_approved',
+    ]))->toBeTrue();
+    expect(Schema::hasColumn('reviews', 'order_id'))->toBeTrue();
+});
+
+test('wishlists table has expected columns', function (): void {
+    expect(Schema::hasColumns('wishlists', [
+        'id', 'user_id', 'product_id',
+    ]))->toBeTrue();
+});
+
+test('coupons table has expected columns', function (): void {
+    expect(Schema::hasColumns('coupons', [
+        'id', 'code', 'type', 'value', 'min_order_amount',
+        'max_discount_amount', 'usage_limit', 'usage_count',
+        'per_user_limit', 'is_active', 'starts_at', 'expires_at',
+    ]))->toBeTrue();
+});
+
+test('coupon_usages table has expected columns', function (): void {
+    expect(Schema::hasColumns('coupon_usages', [
+        'id', 'coupon_id', 'user_id', 'order_id', 'discount_amount',
+    ]))->toBeTrue();
+});
+
+test('orders table has coupon columns', function (): void {
+    expect(Schema::hasColumns('orders', [
+        'coupon_id', 'coupon_code', 'coupon_discount',
+    ]))->toBeTrue();
 });
 
 test('categories table has expected columns', function (): void {

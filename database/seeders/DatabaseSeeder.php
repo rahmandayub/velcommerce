@@ -4,10 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Address;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use App\Models\Review;
 use App\Models\User;
+use App\Models\Wishlist;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -97,5 +100,60 @@ class DatabaseSeeder extends Seeder
                     ]);
                 }
             });
+
+        // Coupons: a couple of demo vouchers
+        Coupon::firstOrCreate(
+            ['code' => 'WELCOME10'],
+            [
+                'type' => 'percent',
+                'value' => 10,
+                'min_order_amount' => 0,
+                'max_discount_amount' => 50000,
+                'usage_limit' => null,
+                'per_user_limit' => 1,
+                'is_active' => true,
+                'starts_at' => null,
+                'expires_at' => null,
+            ]
+        );
+
+        Coupon::firstOrCreate(
+            ['code' => 'FIXED20K'],
+            [
+                'type' => 'fixed',
+                'value' => 20000,
+                'min_order_amount' => 100000,
+                'max_discount_amount' => null,
+                'usage_limit' => null,
+                'per_user_limit' => 1,
+                'is_active' => true,
+                'starts_at' => null,
+                'expires_at' => null,
+            ]
+        );
+
+        // Reviews: a handful of approved reviews across random products
+        $reviewableProducts = Product::inRandomOrder()->limit(8)->get();
+        foreach ($reviewableProducts as $product) {
+            Review::firstOrCreate(
+                ['user_id' => $customer->id, 'product_id' => $product->id],
+                [
+                    'order_id' => null,
+                    'rating' => fake()->numberBetween(4, 5),
+                    'title' => fake()->sentence(3),
+                    'body' => fake()->paragraph(),
+                    'is_approved' => true,
+                ]
+            );
+        }
+
+        // Wishlist: a few products for the demo customer
+        $wishlistProducts = Product::inRandomOrder()->limit(4)->get();
+        foreach ($wishlistProducts as $product) {
+            Wishlist::firstOrCreate([
+                'user_id' => $customer->id,
+                'product_id' => $product->id,
+            ]);
+        }
     }
 }

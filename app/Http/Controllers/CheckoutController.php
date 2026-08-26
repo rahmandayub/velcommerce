@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InsufficientStockException;
 use App\Http\Requests\PlaceOrderRequest;
+use App\Models\User;
+use App\Notifications\OrderPlacedNotification;
 use App\Services\CartService;
 use App\Services\CheckoutService;
+use App\Services\CouponService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -17,6 +20,7 @@ class CheckoutController extends Controller
     public function __construct(
         private readonly CartService $cartService,
         private readonly CheckoutService $checkoutService,
+        private readonly CouponService $couponService,
     ) {}
 
     public function address(Request $request): Response
@@ -29,6 +33,7 @@ class CheckoutController extends Controller
         }
 
         $addresses = $request->user()->addresses()->latest()->get();
+        $couponPreview = $this->resolveCouponPreview($request);
 
         return Inertia::render('checkout/address', [
             'addresses' => $addresses->map(fn ($a): array => [
@@ -58,6 +63,7 @@ class CheckoutController extends Controller
                 'subtotal' => (float) $cart->subtotal,
                 'shipping_cost' => (float) config('shop.shipping_cost', 15000),
             ],
+            'coupon' => $couponPreview,
         ]);
     }
 
@@ -85,7 +91,9 @@ class CheckoutController extends Controller
 
         $subtotal = (float) $cart->subtotal;
         $shippingCost = (float) config('shop.shipping_cost', 15000);
-        $total = $subtotal + $shippingCost;
+        $couponPreview = $this->resolveCouponPreview($request);
+        $discount = $couponPreview['discount'] ?? 0;
+        $total = max(0, $subtotal + $shippingCost - $discount);
 
         return Inertia::render('checkout/confirm', [
             'address' => [
@@ -107,8 +115,10 @@ class CheckoutController extends Controller
                 ])->values()->all(),
                 'subtotal' => $subtotal,
                 'shipping_cost' => $shippingCost,
+                'discount' => $discount,
                 'total' => $total,
             ],
+            'coupon' => $couponPreview,
         ]);
     }
 
@@ -117,19 +127,62 @@ class CheckoutController extends Controller
         $cart = $this->cartService->resolve($request);
         $address = $request->user()->addresses()->findOrFail($request->integer('address_id'));
 
+        $data = $request->validated();
+        $data['coupon_code'] = session('coupon_code');
+
         try {
             $order = $this->checkoutService->placeOrder(
                 $request->user(),
                 $address,
                 $cart,
-                $request->validated(),
+                $data,
             );
         } catch (InsufficientStockException $e) {
             throw ValidationException::withMessages([
                 'cart' => $e->getMessage(),
             ]);
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors());
         }
 
+        session()->forget('coupon_code');
+
+        $order->user->notify(new OrderPlacedNotification($order));
+
         return redirect()->route('orders.payment', ['order' => $order->order_number]);
+    }
+
+    /**
+     * Resolve the applied coupon from the session and compute its discount
+     * against the current cart subtotal (without incrementing usage).
+     *
+     * @return array{code: string, type: string, value: float, discount: float}|null
+     */
+    private function resolveCouponPreview(Request $request): ?array
+    {
+        $code = session('coupon_code');
+
+        if (blank($code)) {
+            return null;
+        }
+
+        /** @var User $user */
+        $user = $request->user();
+        $subtotal = (float) $this->cartService->resolve($request)->load('items')->subtotal;
+
+        try {
+            $coupon = $this->couponService->validateForCheckout($code, $user, $subtotal);
+        } catch (ValidationException) {
+            session()->forget('coupon_code');
+
+            return null;
+        }
+
+        return [
+            'code' => $coupon->code,
+            'type' => $coupon->type->value,
+            'value' => (float) $coupon->value,
+            'discount' => $coupon->calculateDiscount($subtotal),
+        ];
     }
 }
