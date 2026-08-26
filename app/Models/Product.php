@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Models;
+
+use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+
+/**
+ * @property int $id
+ * @property int|null $category_id
+ * @property string $name
+ * @property string $slug
+ * @property string $description
+ * @property string|null $short_description
+ * @property string $price
+ * @property string|null $compare_price
+ * @property string|null $cost
+ * @property string $sku
+ * @property string|null $barcode
+ * @property int $stock
+ * @property bool $is_active
+ * @property bool $is_featured
+ * @property int|null $weight
+ * @property array<string, mixed>|null $dimensions
+ */
+class Product extends Model
+{
+    /** @use HasFactory<ProductFactory> */
+    use HasFactory;
+
+    protected $fillable = [
+        'category_id',
+        'name',
+        'slug',
+        'description',
+        'short_description',
+        'price',
+        'compare_price',
+        'cost',
+        'sku',
+        'barcode',
+        'stock',
+        'is_active',
+        'is_featured',
+        'weight',
+        'dimensions',
+        'meta_title',
+        'meta_description',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+            'compare_price' => 'decimal:2',
+            'cost' => 'decimal:2',
+            'is_active' => 'boolean',
+            'is_featured' => 'boolean',
+            'dimensions' => 'array',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product): void {
+            if (empty($product->slug) && ! empty($product->name)) {
+                $product->slug = Str::slug($product->name);
+            }
+        });
+    }
+
+    /**
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * @return HasMany<ProductVariant, $this>
+     */
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
+     * @return HasMany<ProductImage, $this>
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    /**
+     * @return HasMany<CartItem, $this>
+     */
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    /**
+     * @return HasMany<OrderItem, $this>
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function getTotalStockAttribute(): int
+    {
+        if ($this->variants()->exists()) {
+            return (int) $this->variants()->sum('stock');
+        }
+
+        return (int) $this->stock;
+    }
+}
