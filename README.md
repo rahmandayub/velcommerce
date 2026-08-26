@@ -1,6 +1,6 @@
 # Velcommerce — E-Commerce Portfolio (Laravel + Inertia + React)
 
-![CI](https://github.com/velcommerce/velcommerce/actions/workflows/tests.yml/badge.svg)
+![CI](https://github.com/rahmandayub/velcommerce/actions/workflows/tests.yml/badge.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-13-red)
 ![PHP](https://img.shields.io/badge/PHP-8.5-777BB4)
 ![React](https://img.shields.io/badge/React-19-58C4DC)
