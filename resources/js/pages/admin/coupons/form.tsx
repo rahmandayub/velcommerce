@@ -5,7 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { update as couponUpdate, store as couponStore } from '@/routes/admin/coupons';
+import {
+    update as couponUpdate,
+    store as couponStore,
+} from '@/routes/admin/coupons';
 
 type Coupon = {
     id: number;
@@ -35,7 +38,9 @@ function toDateInput(value: string | null): string {
 
 export default function CouponForm({ coupon }: Props) {
     const isEdit = coupon !== null;
-    const [type, setType] = useState<'percent' | 'fixed'>(coupon?.type ?? 'percent');
+    const [type, setType] = useState<'percent' | 'fixed'>(
+        coupon?.type ?? 'percent',
+    );
 
     const form = {
         data: {
@@ -55,8 +60,7 @@ export default function CouponForm({ coupon }: Props) {
         setData: (key: string, value: unknown) => {
             form.data = { ...form.data, [key]: value };
         },
-        post: (url: string) =>
-            submit(url, 'post'),
+        post: (url: string) => submit(url, 'post'),
         put: (url: string) => submit(url, 'put'),
     };
 
@@ -82,7 +86,9 @@ export default function CouponForm({ coupon }: Props) {
                 { title: isEdit ? 'Edit' : 'Buat', href: '#' },
             ]}
         >
-            <Head title={isEdit ? 'Admin — Edit Kupon' : 'Admin — Buat Kupon'} />
+            <Head
+                title={isEdit ? 'Admin — Edit Kupon' : 'Admin — Buat Kupon'}
+            />
             <div className="mx-auto max-w-2xl space-y-4 p-4">
                 <h1 className="text-2xl font-bold">
                     {isEdit ? 'Edit Kupon' : 'Buat Kupon'}
@@ -90,7 +96,9 @@ export default function CouponForm({ coupon }: Props) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">Detail Kupon</CardTitle>
+                        <CardTitle className="text-base">
+                            Detail Kupon
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-1">
@@ -98,7 +106,10 @@ export default function CouponForm({ coupon }: Props) {
                             <Input
                                 value={form.data.code}
                                 onChange={(e) =>
-                                    form.setData('code', e.target.value.toUpperCase())
+                                    form.setData(
+                                        'code',
+                                        e.target.value.toUpperCase(),
+                                    )
                                 }
                                 placeholder="WELCOME10"
                             />
@@ -109,7 +120,11 @@ export default function CouponForm({ coupon }: Props) {
                             <div className="flex gap-2">
                                 <Button
                                     type="button"
-                                    variant={type === 'percent' ? 'default' : 'outline'}
+                                    variant={
+                                        type === 'percent'
+                                            ? 'default'
+                                            : 'outline'
+                                    }
                                     onClick={() => {
                                         setType('percent');
                                         form.setData('type', 'percent');
@@ -119,7 +134,9 @@ export default function CouponForm({ coupon }: Props) {
                                 </Button>
                                 <Button
                                     type="button"
-                                    variant={type === 'fixed' ? 'default' : 'outline'}
+                                    variant={
+                                        type === 'fixed' ? 'default' : 'outline'
+                                    }
                                     onClick={() => {
                                         setType('fixed');
                                         form.setData('type', 'fixed');
@@ -133,12 +150,16 @@ export default function CouponForm({ coupon }: Props) {
                         <div className="grid gap-3 sm:grid-cols-2">
                             <div className="space-y-1">
                                 <Label>
-                                    {type === 'percent' ? 'Persen (%)' : 'Nominal (Rp)'}
+                                    {type === 'percent'
+                                        ? 'Persen (%)'
+                                        : 'Nominal (Rp)'}
                                 </Label>
                                 <Input
                                     type="number"
                                     value={form.data.value}
-                                    onChange={(e) => form.setData('value', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('value', e.target.value)
+                                    }
                                 />
                             </div>
                             <div className="space-y-1">
@@ -147,7 +168,10 @@ export default function CouponForm({ coupon }: Props) {
                                     type="number"
                                     value={form.data.min_order_amount}
                                     onChange={(e) =>
-                                        form.setData('min_order_amount', e.target.value)
+                                        form.setData(
+                                            'min_order_amount',
+                                            e.target.value,
+                                        )
                                     }
                                 />
                             </div>
@@ -167,7 +191,10 @@ export default function CouponForm({ coupon }: Props) {
                                     type="number"
                                     value={form.data.max_discount_amount}
                                     onChange={(e) =>
-                                        form.setData('max_discount_amount', e.target.value)
+                                        form.setData(
+                                            'max_discount_amount',
+                                            e.target.value,
+                                        )
                                     }
                                 />
                             </div>
@@ -176,7 +203,12 @@ export default function CouponForm({ coupon }: Props) {
                                 <Input
                                     type="number"
                                     value={form.data.usage_limit}
-                                    onChange={(e) => form.setData('usage_limit', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'usage_limit',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="tanpa batas"
                                 />
                             </div>
@@ -189,7 +221,10 @@ export default function CouponForm({ coupon }: Props) {
                                     type="number"
                                     value={form.data.per_user_limit}
                                     onChange={(e) =>
-                                        form.setData('per_user_limit', e.target.value)
+                                        form.setData(
+                                            'per_user_limit',
+                                            e.target.value,
+                                        )
                                     }
                                     placeholder="1"
                                 />
@@ -218,7 +253,12 @@ export default function CouponForm({ coupon }: Props) {
                                 <Input
                                     type="datetime-local"
                                     value={form.data.starts_at}
-                                    onChange={(e) => form.setData('starts_at', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'starts_at',
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                             </div>
                             <div className="space-y-1">
@@ -226,7 +266,12 @@ export default function CouponForm({ coupon }: Props) {
                                 <Input
                                     type="datetime-local"
                                     value={form.data.expires_at}
-                                    onChange={(e) => form.setData('expires_at', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'expires_at',
+                                            e.target.value,
+                                        )
+                                    }
                                 />
                             </div>
                         </div>
@@ -236,7 +281,11 @@ export default function CouponForm({ coupon }: Props) {
                                 type="button"
                                 onClick={() =>
                                     isEdit
-                                        ? form.put(couponUpdate({ coupon: coupon!.id }).url)
+                                        ? form.put(
+                                              couponUpdate({
+                                                  coupon: coupon!.id,
+                                              }).url,
+                                          )
                                         : form.post(couponStore().url)
                                 }
                             >

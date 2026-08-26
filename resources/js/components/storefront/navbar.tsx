@@ -117,7 +117,11 @@ export function Navbar() {
                                         className="pl-8"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
-                                                onSearchSubmit((e.target as HTMLInputElement).value);
+                                                onSearchSubmit(
+                                                    (
+                                                        e.target as HTMLInputElement
+                                                    ).value,
+                                                );
                                             }
                                         }}
                                     />
@@ -157,7 +161,9 @@ export function Navbar() {
                             className="w-[200px] pl-8 lg:w-[280px]"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
-                                    onSearchSubmit((e.target as HTMLInputElement).value);
+                                    onSearchSubmit(
+                                        (e.target as HTMLInputElement).value,
+                                    );
                                 }
                             }}
                         />
@@ -226,10 +232,7 @@ export function Navbar() {
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                className="w-56"
-                                align="end"
-                            >
+                            <DropdownMenuContent className="w-56" align="end">
                                 <UserMenuContent user={auth.user} />
                             </DropdownMenuContent>
                         </DropdownMenu>

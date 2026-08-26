@@ -15,7 +15,10 @@ const labels: Record<string, string> = {
     refunded: 'Refund',
 };
 
-const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+const variants: Record<
+    string,
+    'default' | 'secondary' | 'destructive' | 'outline'
+> = {
     pending: 'secondary',
     paid: 'default',
     shipped: 'default',

@@ -18,7 +18,10 @@ type ChartPoint = {
 export function SalesChart({ data }: { data: ChartPoint[] }) {
     return (
         <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
+            <BarChart
+                data={data}
+                margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
+            >
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis
                     dataKey="label"
@@ -29,11 +32,12 @@ export function SalesChart({ data }: { data: ChartPoint[] }) {
                 <YAxis
                     tick={{ fontSize: 12 }}
                     className="text-muted-foreground"
-                    tickFormatter={(v: number) => `Rp ${(v / 1000).toFixed(0)}k`}
+                    tickFormatter={(v: number) =>
+                        `Rp ${(v / 1000).toFixed(0)}k`
+                    }
                     width={64}
                 />
                 <Tooltip
-                     
                     formatter={(value: any, name: any) =>
                         name === 'revenue'
                             ? [formatIDR(Number(value)), 'Pendapatan']
@@ -45,7 +49,11 @@ export function SalesChart({ data }: { data: ChartPoint[] }) {
                         fontSize: 12,
                     }}
                 />
-                <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Bar
+                    dataKey="revenue"
+                    fill="hsl(var(--primary))"
+                    radius={[4, 4, 0, 0]}
+                />
             </BarChart>
         </ResponsiveContainer>
     );

@@ -30,7 +30,9 @@ export function ReviewCard({ review }: ReviewCardProps) {
                 </span>
             </div>
             {review.body && (
-                <p className="mt-2 text-sm text-muted-foreground">{review.body}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                    {review.body}
+                </p>
             )}
             <p className="mt-2 text-xs text-muted-foreground">
                 — {review.user?.name ?? 'Pengguna'}

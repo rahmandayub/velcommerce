@@ -1,5 +1,6 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { SeoHead } from '@/components/seo-head';
 import { Pagination } from '@/components/storefront/pagination';
 import { ProductCard } from '@/components/storefront/product-card';
 import { Badge } from '@/components/ui/badge';
@@ -43,6 +44,14 @@ type Paginated<T> = {
     meta?: unknown;
 };
 
+type Seo = {
+    title: string;
+    description: string;
+    canonical: string;
+    image: string | null;
+    type: string;
+};
+
 type Props = {
     products: Paginated<Product>;
     categories: Category[];
@@ -54,9 +63,16 @@ type Props = {
         max_price?: string;
         sort?: string;
     };
+    seo: Seo;
 };
 
-export default function ProductsIndex({ products, categories, filters, wishlistIds = [] }: Props) {
+export default function ProductsIndex({
+    products,
+    categories,
+    filters,
+    wishlistIds = [],
+    seo,
+}: Props) {
     const [q, setQ] = useState(filters.q ?? '');
     const [minPrice, setMinPrice] = useState(filters.min_price ?? '');
     const [maxPrice, setMaxPrice] = useState(filters.max_price ?? '');
@@ -80,31 +96,40 @@ export default function ProductsIndex({ products, categories, filters, wishlistI
 
         const next = {
             q: overrides.q !== undefined ? overrides.q : q,
-            category: overrides.category !== undefined ? overrides.category : category,
-            min_price: overrides.min_price !== undefined ? overrides.min_price : minPrice,
-            max_price: overrides.max_price !== undefined ? overrides.max_price : maxPrice,
+            category:
+                overrides.category !== undefined
+                    ? overrides.category
+                    : category,
+            min_price:
+                overrides.min_price !== undefined
+                    ? overrides.min_price
+                    : minPrice,
+            max_price:
+                overrides.max_price !== undefined
+                    ? overrides.max_price
+                    : maxPrice,
             sort: overrides.sort !== undefined ? overrides.sort : sort,
         };
 
         if (next.q) {
-params.q = next.q;
-}
+            params.q = next.q;
+        }
 
         if (next.category) {
-params.category = next.category;
-}
+            params.category = next.category;
+        }
 
         if (next.min_price) {
-params.min_price = next.min_price;
-}
+            params.min_price = next.min_price;
+        }
 
         if (next.max_price) {
-params.max_price = next.max_price;
-}
+            params.max_price = next.max_price;
+        }
 
         if (next.sort && next.sort !== 'latest') {
-params.sort = next.sort;
-}
+            params.sort = next.sort;
+        }
 
         router.get('/products', params, {
             only: ['products'],
@@ -115,10 +140,18 @@ params.sort = next.sort;
 
     return (
         <StorefrontLayout>
-            <Head title="Katalog Produk" />
+            <SeoHead
+                title={seo.title}
+                description={seo.description}
+                canonical={seo.canonical}
+                image={seo.image}
+                type={seo.type}
+            />
             <div className="mx-auto max-w-7xl px-4 py-8">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold tracking-tight">Katalog Produk</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        Katalog Produk
+                    </h1>
                     <p className="text-sm text-muted-foreground">
                         Temukan produk terbaik dengan harga terjangkau.
                     </p>
@@ -126,7 +159,7 @@ params.sort = next.sort;
 
                 <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
                     {/* Sidebar filters */}
-                    <aside className="space-y-6 rounded-xl border bg-card p-4 h-fit">
+                    <aside className="h-fit space-y-6 rounded-xl border bg-card p-4">
                         <div className="space-y-2">
                             <Label htmlFor="q">Cari</Label>
                             <Input
@@ -153,11 +186,17 @@ params.sort = next.sort;
                                 {categories.map((cat) => (
                                     <Badge
                                         key={cat.id}
-                                        variant={category === cat.slug ? 'default' : 'outline'}
+                                        variant={
+                                            category === cat.slug
+                                                ? 'default'
+                                                : 'outline'
+                                        }
                                         className="cursor-pointer"
                                         onClick={() => {
                                             setCategory(cat.slug);
-                                            applyFilters({ category: cat.slug });
+                                            applyFilters({
+                                                category: cat.slug,
+                                            });
                                         }}
                                     >
                                         {cat.name}
@@ -167,7 +206,10 @@ params.sort = next.sort;
                             {categories
                                 .filter((c) => c.children.length > 0)
                                 .map((cat) => (
-                                    <div key={`child-${cat.id}`} className="ml-2 mt-2 space-y-1">
+                                    <div
+                                        key={`child-${cat.id}`}
+                                        className="mt-2 ml-2 space-y-1"
+                                    >
                                         <p className="text-xs font-medium text-muted-foreground">
                                             {cat.name} — sub:
                                         </p>
@@ -176,12 +218,17 @@ params.sort = next.sort;
                                                 <Badge
                                                     key={child.id}
                                                     variant={
-                                                        category === child.slug ? 'default' : 'secondary'
+                                                        category === child.slug
+                                                            ? 'default'
+                                                            : 'secondary'
                                                     }
                                                     className="cursor-pointer text-xs"
                                                     onClick={() => {
                                                         setCategory(child.slug);
-                                                        applyFilters({ category: child.slug });
+                                                        applyFilters({
+                                                            category:
+                                                                child.slug,
+                                                        });
                                                     }}
                                                 >
                                                     {child.name}
@@ -199,13 +246,17 @@ params.sort = next.sort;
                                     placeholder="Min"
                                     type="number"
                                     value={minPrice}
-                                    onChange={(e) => setMinPrice(e.target.value)}
+                                    onChange={(e) =>
+                                        setMinPrice(e.target.value)
+                                    }
                                 />
                                 <Input
                                     placeholder="Max"
                                     type="number"
                                     value={maxPrice}
-                                    onChange={(e) => setMaxPrice(e.target.value)}
+                                    onChange={(e) =>
+                                        setMaxPrice(e.target.value)
+                                    }
                                 />
                             </div>
                             <p className="text-xs text-muted-foreground">
@@ -234,9 +285,15 @@ params.sort = next.sort;
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="latest">Terbaru</SelectItem>
-                                    <SelectItem value="price_asc">Harga: Rendah ke Tinggi</SelectItem>
-                                    <SelectItem value="price_desc">Harga: Tinggi ke Rendah</SelectItem>
+                                    <SelectItem value="latest">
+                                        Terbaru
+                                    </SelectItem>
+                                    <SelectItem value="price_asc">
+                                        Harga: Rendah ke Tinggi
+                                    </SelectItem>
+                                    <SelectItem value="price_desc">
+                                        Harga: Tinggi ke Rendah
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -246,8 +303,14 @@ params.sort = next.sort;
                     <div className="space-y-6">
                         {products.data.length === 0 ? (
                             <div className="rounded-xl border bg-card p-12 text-center">
-                                <p className="text-muted-foreground">Tidak ada produk ditemukan.</p>
-                                <Button variant="outline" className="mt-4" asChild>
+                                <p className="text-muted-foreground">
+                                    Tidak ada produk ditemukan.
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    className="mt-4"
+                                    asChild
+                                >
                                     <Link href="/products">Reset filter</Link>
                                 </Button>
                             </div>
@@ -261,7 +324,9 @@ params.sort = next.sort;
                                         <ProductCard
                                             key={p.id}
                                             product={p}
-                                            isWishlisted={wishlistIds.includes(p.id)}
+                                            isWishlisted={wishlistIds.includes(
+                                                p.id,
+                                            )}
                                         />
                                     ))}
                                 </div>

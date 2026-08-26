@@ -11,10 +11,7 @@ export function Footer() {
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                     {/* Brand */}
                     <div className="space-y-3">
-                        <Link
-                            href={home()}
-                            className="flex items-center gap-2"
-                        >
+                        <Link href={home()} className="flex items-center gap-2">
                             <AppLogo />
                         </Link>
                         <p className="text-sm leading-relaxed text-muted-foreground">
@@ -146,9 +143,7 @@ export function Footer() {
                         © {new Date().getFullYear()} Velcommerce. Hak cipta
                         dilindungi.
                     </p>
-                    <p className="text-xs">
-                        Dibuat dengan ♥ untuk Indonesia
-                    </p>
+                    <p className="text-xs">Dibuat dengan ♥ untuk Indonesia</p>
                 </div>
             </div>
         </footer>

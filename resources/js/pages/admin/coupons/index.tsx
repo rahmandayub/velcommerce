@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { formatIDR } from '@/lib/format';
-import { create as couponCreate, destroy as couponDestroy, edit as couponEdit, toggle as couponToggle } from '@/routes/admin/coupons';
+import {
+    create as couponCreate,
+    destroy as couponDestroy,
+    edit as couponEdit,
+    toggle as couponToggle,
+} from '@/routes/admin/coupons';
 
 type Coupon = {
     id: number;
@@ -42,11 +47,17 @@ export default function AdminCouponsIndex({ coupons }: Props) {
             return;
         }
 
-        router.delete(couponDestroy({ coupon: id }).url, { preserveScroll: true });
+        router.delete(couponDestroy({ coupon: id }).url, {
+            preserveScroll: true,
+        });
     }
 
     function toggle(id: number) {
-        router.post(couponToggle({ coupon: id }).url, {}, { preserveScroll: true });
+        router.post(
+            couponToggle({ coupon: id }).url,
+            {},
+            { preserveScroll: true },
+        );
     }
 
     return (
@@ -73,56 +84,102 @@ export default function AdminCouponsIndex({ coupons }: Props) {
                             <table className="w-full text-sm">
                                 <thead className="border-b bg-muted/40 text-left">
                                     <tr>
-                                        <th className="px-4 py-3 font-medium">Kode</th>
-                                        <th className="px-4 py-3 font-medium">Tipe</th>
-                                        <th className="px-4 py-3 font-medium">Nilai</th>
-                                        <th className="px-4 py-3 font-medium">Min. Order</th>
-                                        <th className="px-4 py-3 font-medium">Penggunaan</th>
-                                        <th className="px-4 py-3 font-medium">Berlaku</th>
-                                        <th className="px-4 py-3 font-medium">Status</th>
-                                        <th className="px-4 py-3 text-right font-medium">Aksi</th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Kode
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Tipe
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Nilai
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Min. Order
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Penggunaan
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Berlaku
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Status
+                                        </th>
+                                        <th className="px-4 py-3 text-right font-medium">
+                                            Aksi
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {coupons.data.map((c) => (
-                                        <tr key={c.id} className="border-b last:border-0">
-                                            <td className="px-4 py-3 font-medium">{c.code}</td>
+                                        <tr
+                                            key={c.id}
+                                            className="border-b last:border-0"
+                                        >
+                                            <td className="px-4 py-3 font-medium">
+                                                {c.code}
+                                            </td>
                                             <td className="px-4 py-3">
-                                                {c.type === 'percent' ? 'Persen' : 'Nominal'}
+                                                {c.type === 'percent'
+                                                    ? 'Persen'
+                                                    : 'Nominal'}
                                             </td>
                                             <td className="px-4 py-3">
                                                 {formatValue(c.type, c.value)}
-                                                {c.max_discount_amount !== null &&
+                                                {c.max_discount_amount !==
+                                                    null &&
                                                     c.type === 'percent' && (
                                                         <span className="text-xs text-muted-foreground">
                                                             {' '}
-                                                            (maks {formatIDR(c.max_discount_amount)})
+                                                            (maks{' '}
+                                                            {formatIDR(
+                                                                c.max_discount_amount,
+                                                            )}
+                                                            )
                                                         </span>
                                                     )}
                                             </td>
                                             <td className="px-4 py-3">
                                                 {c.min_order_amount > 0
-                                                    ? formatIDR(c.min_order_amount)
+                                                    ? formatIDR(
+                                                          c.min_order_amount,
+                                                      )
                                                     : '—'}
                                             </td>
                                             <td className="px-4 py-3">
                                                 {c.usage_count}
-                                                {c.usage_limit ? ` / ${c.usage_limit}` : ''}
+                                                {c.usage_limit
+                                                    ? ` / ${c.usage_limit}`
+                                                    : ''}
                                             </td>
                                             <td className="px-4 py-3 text-xs text-muted-foreground">
                                                 {c.starts_at
-                                                    ? new Date(c.starts_at).toLocaleDateString('id-ID')
+                                                    ? new Date(
+                                                          c.starts_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                      )
                                                     : '—'}{' '}
                                                 s/d{' '}
                                                 {c.expires_at
-                                                    ? new Date(c.expires_at).toLocaleDateString('id-ID')
+                                                    ? new Date(
+                                                          c.expires_at,
+                                                      ).toLocaleDateString(
+                                                          'id-ID',
+                                                      )
                                                     : 'selamanya'}
                                             </td>
                                             <td className="px-4 py-3">
                                                 <Badge
-                                                    variant={c.is_active ? 'default' : 'secondary'}
+                                                    variant={
+                                                        c.is_active
+                                                            ? 'default'
+                                                            : 'secondary'
+                                                    }
                                                 >
-                                                    {c.is_active ? 'Aktif' : 'Nonaktif'}
+                                                    {c.is_active
+                                                        ? 'Aktif'
+                                                        : 'Nonaktif'}
                                                 </Badge>
                                             </td>
                                             <td className="px-4 py-3">
@@ -132,14 +189,22 @@ export default function AdminCouponsIndex({ coupons }: Props) {
                                                         variant="ghost"
                                                         asChild
                                                     >
-                                                        <Link href={couponEdit({ coupon: c.id }).url}>
+                                                        <Link
+                                                            href={
+                                                                couponEdit({
+                                                                    coupon: c.id,
+                                                                }).url
+                                                            }
+                                                        >
                                                             <Pencil className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
                                                     <Button
                                                         size="icon"
                                                         variant="ghost"
-                                                        onClick={() => toggle(c.id)}
+                                                        onClick={() =>
+                                                            toggle(c.id)
+                                                        }
                                                         title="Aktif/Nonaktif"
                                                     >
                                                         <Power className="h-4 w-4" />
@@ -147,7 +212,9 @@ export default function AdminCouponsIndex({ coupons }: Props) {
                                                     <Button
                                                         size="icon"
                                                         variant="ghost"
-                                                        onClick={() => remove(c.id)}
+                                                        onClick={() =>
+                                                            remove(c.id)
+                                                        }
                                                     >
                                                         <Trash2 className="h-4 w-4 text-destructive" />
                                                     </Button>

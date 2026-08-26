@@ -56,17 +56,28 @@ export default function AdminProductsIndex({ products }: Props) {
                             <table className="w-full text-sm">
                                 <thead className="border-b bg-muted/50">
                                     <tr>
-                                        <th className="p-3 text-left">Produk</th>
+                                        <th className="p-3 text-left">
+                                            Produk
+                                        </th>
                                         <th className="p-3 text-left">SKU</th>
-                                        <th className="p-3 text-right">Harga</th>
-                                        <th className="p-3 text-center">Stok</th>
-                                        <th className="p-3 text-center">Status</th>
+                                        <th className="p-3 text-right">
+                                            Harga
+                                        </th>
+                                        <th className="p-3 text-center">
+                                            Stok
+                                        </th>
+                                        <th className="p-3 text-center">
+                                            Status
+                                        </th>
                                         <th className="p-3 text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {products.data.map((p) => (
-                                        <tr key={p.id} className="border-b last:border-0">
+                                        <tr
+                                            key={p.id}
+                                            className="border-b last:border-0"
+                                        >
                                             <td className="p-3">
                                                 <div className="flex items-center gap-3">
                                                     <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-muted">
@@ -79,27 +90,48 @@ export default function AdminProductsIndex({ products }: Props) {
                                                         ) : null}
                                                     </div>
                                                     <div>
-                                                        <p className="font-medium">{p.name}</p>
+                                                        <p className="font-medium">
+                                                            {p.name}
+                                                        </p>
                                                         <p className="text-xs text-muted-foreground">
-                                                            {p.category?.name ?? '—'} · {p.variants_count} varian
+                                                            {p.category?.name ??
+                                                                '—'}{' '}
+                                                            · {p.variants_count}{' '}
+                                                            varian
                                                         </p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-3 font-mono text-xs">{p.sku}</td>
-                                            <td className="p-3 text-right">{formatIDR(p.price)}</td>
-                                            <td className="p-3 text-center">{p.total_stock}</td>
+                                            <td className="p-3 font-mono text-xs">
+                                                {p.sku}
+                                            </td>
+                                            <td className="p-3 text-right">
+                                                {formatIDR(p.price)}
+                                            </td>
+                                            <td className="p-3 text-center">
+                                                {p.total_stock}
+                                            </td>
                                             <td className="p-3 text-center">
                                                 {p.is_active ? (
-                                                    <Badge variant="secondary">Aktif</Badge>
+                                                    <Badge variant="secondary">
+                                                        Aktif
+                                                    </Badge>
                                                 ) : (
-                                                    <Badge variant="destructive">Nonaktif</Badge>
+                                                    <Badge variant="destructive">
+                                                        Nonaktif
+                                                    </Badge>
                                                 )}
                                             </td>
                                             <td className="p-3">
                                                 <div className="flex justify-end gap-1">
-                                                    <Button variant="ghost" size="icon" asChild>
-                                                        <Link href={`/admin/products/${p.id}/edit`}>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        asChild
+                                                    >
+                                                        <Link
+                                                            href={`/admin/products/${p.id}/edit`}
+                                                        >
                                                             <Pencil className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
@@ -107,8 +139,14 @@ export default function AdminProductsIndex({ products }: Props) {
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => {
-                                                            if (confirm(`Hapus produk "${p.name}"?`)) {
-                                                                router.delete(`/admin/products/${p.id}`);
+                                                            if (
+                                                                confirm(
+                                                                    `Hapus produk "${p.name}"?`,
+                                                                )
+                                                            ) {
+                                                                router.delete(
+                                                                    `/admin/products/${p.id}`,
+                                                                );
                                                             }
                                                         }}
                                                     >

@@ -81,7 +81,9 @@ export function CouponInput({ coupon, compact = false }: CouponInputProps) {
         <form onSubmit={apply} className="flex items-center gap-2">
             <input
                 value={form.data.coupon_code}
-                onChange={(e) => form.setData('coupon_code', e.target.value.toUpperCase())}
+                onChange={(e) =>
+                    form.setData('coupon_code', e.target.value.toUpperCase())
+                }
                 placeholder="Kode voucher"
                 className="h-9 flex-1 rounded-md border bg-background px-3 text-sm"
             />

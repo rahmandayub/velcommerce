@@ -4,12 +4,31 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 
 type CategoryOption = { id: number; name: string };
-type ProductImage = { id: number; url: string; is_primary: boolean; sort_order: number };
-type Variant = { id?: number; sku: string; name: string | null; price: number | null; stock: number; attributes: Record<string, string> | null; is_active: boolean };
+type ProductImage = {
+    id: number;
+    url: string;
+    is_primary: boolean;
+    sort_order: number;
+};
+type Variant = {
+    id?: number;
+    sku: string;
+    name: string | null;
+    price: number | null;
+    stock: number;
+    attributes: Record<string, string> | null;
+    is_active: boolean;
+};
 
 type Product = {
     id: number;
@@ -70,12 +89,21 @@ export default function AdminProductForm({ product, categories }: Props) {
     function addVariant() {
         setVariants((prev) => [
             ...prev,
-            { sku: '', name: '', price: null, stock: 0, attributes: null, is_active: true },
+            {
+                sku: '',
+                name: '',
+                price: null,
+                stock: 0,
+                attributes: null,
+                is_active: true,
+            },
         ]);
     }
 
     function updateVariant(idx: number, patch: Partial<Variant>) {
-        setVariants((prev) => prev.map((v, i) => (i === idx ? { ...v, ...patch } : v)));
+        setVariants((prev) =>
+            prev.map((v, i) => (i === idx ? { ...v, ...patch } : v)),
+        );
     }
 
     function removeVariant(idx: number) {
@@ -92,15 +120,15 @@ export default function AdminProductForm({ product, categories }: Props) {
         fd.append('price', form.price);
 
         if (form.compare_price) {
-fd.append('compare_price', form.compare_price);
-}
+            fd.append('compare_price', form.compare_price);
+        }
 
         fd.append('sku', form.sku);
         fd.append('stock', form.stock);
 
         if (form.category_id) {
-fd.append('category_id', form.category_id);
-}
+            fd.append('category_id', form.category_id);
+        }
 
         fd.append('is_active', form.is_active ? '1' : '0');
         fd.append('is_featured', form.is_featured ? '1' : '0');
@@ -109,31 +137,36 @@ fd.append('category_id', form.category_id);
 
         variants.forEach((v, i) => {
             if (v.id) {
-fd.append(`variants[${i}][id]`, String(v.id));
-}
+                fd.append(`variants[${i}][id]`, String(v.id));
+            }
 
             fd.append(`variants[${i}][sku]`, v.sku);
 
             if (v.name) {
-fd.append(`variants[${i}][name]`, v.name);
-}
+                fd.append(`variants[${i}][name]`, v.name);
+            }
 
             if (v.price !== null && v.price !== undefined) {
-fd.append(`variants[${i}][price]`, String(v.price));
-}
+                fd.append(`variants[${i}][price]`, String(v.price));
+            }
 
             fd.append(`variants[${i}][stock]`, String(v.stock));
 
             if (v.attributes) {
-fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
-}
+                fd.append(
+                    `variants[${i}][attributes]`,
+                    JSON.stringify(v.attributes),
+                );
+            }
 
             fd.append(`variants[${i}][is_active]`, v.is_active ? '1' : '0');
         });
 
         if (isEdit) {
             fd.append('_method', 'PUT');
-            router.post(`/admin/products/${product!.id}`, fd, { forceFormData: true });
+            router.post(`/admin/products/${product!.id}`, fd, {
+                forceFormData: true,
+            });
         } else {
             router.post('/admin/products', fd, { forceFormData: true });
         }
@@ -156,53 +189,129 @@ fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
                 <form onSubmit={submit} className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">Informasi Dasar</CardTitle>
+                            <CardTitle className="text-base">
+                                Informasi Dasar
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-1 sm:col-span-2">
                                     <Label>Nama *</Label>
-                                    <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                                    <Input
+                                        value={form.name}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                name: e.target.value,
+                                            })
+                                        }
+                                        required
+                                    />
                                 </div>
                                 <div className="space-y-1 sm:col-span-2">
                                     <Label>Deskripsi *</Label>
                                     <textarea
                                         value={form.description}
-                                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                description: e.target.value,
+                                            })
+                                        }
                                         required
                                         rows={4}
-                                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                                     />
                                 </div>
                                 <div className="space-y-1 sm:col-span-2">
                                     <Label>Short Description</Label>
-                                    <Input value={form.short_description} onChange={(e) => setForm({ ...form, short_description: e.target.value })} />
+                                    <Input
+                                        value={form.short_description}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                short_description:
+                                                    e.target.value,
+                                            })
+                                        }
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <Label>Harga *</Label>
-                                    <Input type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={form.price}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                price: e.target.value,
+                                            })
+                                        }
+                                        required
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <Label>Compare Price</Label>
-                                    <Input type="number" step="0.01" min="0" value={form.compare_price} onChange={(e) => setForm({ ...form, compare_price: e.target.value })} />
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={form.compare_price}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                compare_price: e.target.value,
+                                            })
+                                        }
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <Label>SKU *</Label>
-                                    <Input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} required />
+                                    <Input
+                                        value={form.sku}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                sku: e.target.value,
+                                            })
+                                        }
+                                        required
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <Label>Stok *</Label>
-                                    <Input type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} required />
+                                    <Input
+                                        type="number"
+                                        min="0"
+                                        value={form.stock}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                stock: e.target.value,
+                                            })
+                                        }
+                                        required
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <Label>Kategori</Label>
-                                    <Select value={form.category_id} onValueChange={(v) => setForm({ ...form, category_id: v })}>
+                                    <Select
+                                        value={form.category_id}
+                                        onValueChange={(v) =>
+                                            setForm({ ...form, category_id: v })
+                                        }
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Pilih kategori" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {categories.map((c) => (
-                                                <SelectItem key={c.id} value={String(c.id)}>
+                                                <SelectItem
+                                                    key={c.id}
+                                                    value={String(c.id)}
+                                                >
                                                     {c.name}
                                                 </SelectItem>
                                             ))}
@@ -211,13 +320,25 @@ fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
                                 </div>
                                 <div className="space-y-1">
                                     <Label>Status</Label>
-                                    <Select value={form.is_active ? '1' : '0'} onValueChange={(v) => setForm({ ...form, is_active: v === '1' })}>
+                                    <Select
+                                        value={form.is_active ? '1' : '0'}
+                                        onValueChange={(v) =>
+                                            setForm({
+                                                ...form,
+                                                is_active: v === '1',
+                                            })
+                                        }
+                                    >
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="1">Aktif</SelectItem>
-                                            <SelectItem value="0">Nonaktif</SelectItem>
+                                            <SelectItem value="1">
+                                                Aktif
+                                            </SelectItem>
+                                            <SelectItem value="0">
+                                                Nonaktif
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -227,24 +348,47 @@ fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">Gambar (maks 5, jpg/png/webp, 2MB)</CardTitle>
+                            <CardTitle className="text-base">
+                                Gambar (maks 5, jpg/png/webp, 2MB)
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {product?.images?.length ? (
                                 <div className="flex flex-wrap gap-2">
                                     {product.images.map((img) => (
-                                        <div key={img.id} className="relative h-20 w-20 overflow-hidden rounded border">
-                                            <img src={img.url} alt="" className="h-full w-full object-cover" />
-                                            {img.is_primary && <span className="absolute bottom-0 left-0 bg-primary px-1 text-[10px] text-primary-foreground">Primary</span>}
+                                        <div
+                                            key={img.id}
+                                            className="relative h-20 w-20 overflow-hidden rounded border"
+                                        >
+                                            <img
+                                                src={img.url}
+                                                alt=""
+                                                className="h-full w-full object-cover"
+                                            />
+                                            {img.is_primary && (
+                                                <span className="absolute bottom-0 left-0 bg-primary px-1 text-[10px] text-primary-foreground">
+                                                    Primary
+                                                </span>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
                             ) : null}
-                            <Input type="file" multiple accept="image/*" onChange={handleFiles} />
+                            <Input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFiles}
+                            />
                             {previews.length > 0 && (
                                 <div className="flex flex-wrap gap-2">
                                     {previews.map((src, i) => (
-                                        <img key={i} src={src} alt={`preview ${i}`} className="h-20 w-20 rounded border object-cover" />
+                                        <img
+                                            key={i}
+                                            src={src}
+                                            alt={`preview ${i}`}
+                                            className="h-20 w-20 rounded border object-cover"
+                                        />
                                     ))}
                                 </div>
                             )}
@@ -253,41 +397,112 @@ fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle className="text-base">Varian (opsional)</CardTitle>
-                            <Button type="button" variant="outline" size="sm" onClick={addVariant}>
+                            <CardTitle className="text-base">
+                                Varian (opsional)
+                            </CardTitle>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addVariant}
+                            >
                                 + Tambah Varian
                             </Button>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {variants.length === 0 && (
-                                <p className="text-sm text-muted-foreground">Belum ada varian. Tambahkan jika produk memiliki warna/ukuran.</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Belum ada varian. Tambahkan jika produk
+                                    memiliki warna/ukuran.
+                                </p>
                             )}
                             {variants.map((v, idx) => (
-                                <div key={idx} className="grid gap-2 rounded-lg border p-3 sm:grid-cols-4">
+                                <div
+                                    key={idx}
+                                    className="grid gap-2 rounded-lg border p-3 sm:grid-cols-4"
+                                >
                                     <div className="space-y-1">
                                         <Label>SKU *</Label>
-                                        <Input value={v.sku} onChange={(e) => updateVariant(idx, { sku: e.target.value })} placeholder="VAR-001" />
+                                        <Input
+                                            value={v.sku}
+                                            onChange={(e) =>
+                                                updateVariant(idx, {
+                                                    sku: e.target.value,
+                                                })
+                                            }
+                                            placeholder="VAR-001"
+                                        />
                                     </div>
                                     <div className="space-y-1">
                                         <Label>Nama</Label>
-                                        <Input value={v.name ?? ''} onChange={(e) => updateVariant(idx, { name: e.target.value })} placeholder="Merah - M" />
+                                        <Input
+                                            value={v.name ?? ''}
+                                            onChange={(e) =>
+                                                updateVariant(idx, {
+                                                    name: e.target.value,
+                                                })
+                                            }
+                                            placeholder="Merah - M"
+                                        />
                                     </div>
                                     <div className="space-y-1">
                                         <Label>Harga</Label>
-                                        <Input type="number" step="0.01" value={v.price ?? ''} onChange={(e) => updateVariant(idx, { price: e.target.value ? parseFloat(e.target.value) : null })} placeholder="Kosong = ikut produk" />
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            value={v.price ?? ''}
+                                            onChange={(e) =>
+                                                updateVariant(idx, {
+                                                    price: e.target.value
+                                                        ? parseFloat(
+                                                              e.target.value,
+                                                          )
+                                                        : null,
+                                                })
+                                            }
+                                            placeholder="Kosong = ikut produk"
+                                        />
                                     </div>
                                     <div className="space-y-1">
                                         <Label>Stok *</Label>
-                                        <Input type="number" min="0" value={v.stock} onChange={(e) => updateVariant(idx, { stock: parseInt(e.target.value) || 0 })} />
-                                    </div>
-                                    <div className="sm:col-span-3 space-y-1">
-                                        <Label>Attributes JSON (cth: {`{"color":"Merah","size":"M"}`})</Label>
                                         <Input
-                                            value={v.attributes ? JSON.stringify(v.attributes) : ''}
+                                            type="number"
+                                            min="0"
+                                            value={v.stock}
+                                            onChange={(e) =>
+                                                updateVariant(idx, {
+                                                    stock:
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || 0,
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="space-y-1 sm:col-span-3">
+                                        <Label>
+                                            Attributes JSON (cth:{' '}
+                                            {`{"color":"Merah","size":"M"}`})
+                                        </Label>
+                                        <Input
+                                            value={
+                                                v.attributes
+                                                    ? JSON.stringify(
+                                                          v.attributes,
+                                                      )
+                                                    : ''
+                                            }
                                             onChange={(e) => {
                                                 try {
-                                                    const parsed = e.target.value ? JSON.parse(e.target.value) : null;
-                                                    updateVariant(idx, { attributes: parsed });
+                                                    const parsed = e.target
+                                                        .value
+                                                        ? JSON.parse(
+                                                              e.target.value,
+                                                          )
+                                                        : null;
+                                                    updateVariant(idx, {
+                                                        attributes: parsed,
+                                                    });
                                                 } catch {
                                                     // ignore parse error while typing; keep raw? store as null until valid
                                                 }
@@ -296,7 +511,12 @@ fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
                                         />
                                     </div>
                                     <div className="flex items-end">
-                                        <Button type="button" variant="destructive" size="sm" onClick={() => removeVariant(idx)}>
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => removeVariant(idx)}
+                                        >
                                             Hapus
                                         </Button>
                                     </div>
@@ -306,7 +526,9 @@ fd.append(`variants[${i}][attributes]`, JSON.stringify(v.attributes));
                     </Card>
 
                     <div className="flex gap-2">
-                        <Button type="submit">{isEdit ? 'Simpan Perubahan' : 'Buat Produk'}</Button>
+                        <Button type="submit">
+                            {isEdit ? 'Simpan Perubahan' : 'Buat Produk'}
+                        </Button>
                         <Button type="button" variant="outline" asChild>
                             <Link href="/admin/products">Batal</Link>
                         </Button>

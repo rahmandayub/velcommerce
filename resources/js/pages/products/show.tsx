@@ -1,5 +1,6 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { SeoHead } from '@/components/seo-head';
 import { Pagination } from '@/components/storefront/pagination';
 import { ProductGallery } from '@/components/storefront/product-gallery';
 import { ReviewCard } from '@/components/storefront/review-card';
@@ -38,6 +39,14 @@ type PaginatedReview = {
     links: { url: string | null; label: string; active: boolean }[];
 };
 
+type Seo = {
+    title: string;
+    description: string;
+    canonical: string;
+    image: string | null;
+    type: string;
+};
+
 type Props = {
     product: {
         id: number;
@@ -54,7 +63,12 @@ type Props = {
         average_rating: number;
         reviews_count: number;
         category: { id: number; name: string; slug: string } | null;
-        images: { id: number; url: string; is_primary: boolean; alt: string | null }[];
+        images: {
+            id: number;
+            url: string;
+            is_primary: boolean;
+            alt: string | null;
+        }[];
         variants: Variant[];
         reviews: PaginatedReview;
         can_review: boolean;
@@ -65,18 +79,31 @@ type Props = {
             body: string | null;
         } | null;
     };
+    seo: Seo;
+    jsonLd: Record<string, unknown>;
+    breadcrumbLd: Record<string, unknown>;
 };
 
-export default function ProductShow({ product }: Props) {
+export default function ProductShow({
+    product,
+    seo,
+    jsonLd,
+    breadcrumbLd,
+}: Props) {
     const hasVariants = product.variants.length > 0;
     const [selectedVariantId, setSelectedVariantId] = useState<number | null>(
         hasVariants ? product.variants[0].id : null,
     );
     const [qty, setQty] = useState(1);
 
-    const selectedVariant = product.variants.find((v) => v.id === selectedVariantId) ?? null;
-    const effectivePrice = selectedVariant ? selectedVariant.effective_price : product.price;
-    const availableStock = selectedVariant ? selectedVariant.stock : product.stock;
+    const selectedVariant =
+        product.variants.find((v) => v.id === selectedVariantId) ?? null;
+    const effectivePrice = selectedVariant
+        ? selectedVariant.effective_price
+        : product.price;
+    const availableStock = selectedVariant
+        ? selectedVariant.stock
+        : product.stock;
     const outOfStock = availableStock <= 0;
 
     const form = useForm({
@@ -93,29 +120,50 @@ export default function ProductShow({ product }: Props) {
         }));
 
         // Wayfinder or plain post: /cart/items
-        router.post('/cart/items', {
-            product_id: product.id,
-            variant_id: selectedVariantId,
-            quantity: qty,
-        }, {
-            preserveScroll: true,
-        });
+        router.post(
+            '/cart/items',
+            {
+                product_id: product.id,
+                variant_id: selectedVariantId,
+                quantity: qty,
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     }
 
     return (
         <StorefrontLayout>
-            <Head title={product.name} />
+            <SeoHead
+                title={seo.title}
+                description={seo.description}
+                canonical={seo.canonical}
+                image={seo.image}
+                type={seo.type}
+                jsonLd={jsonLd}
+                breadcrumbLd={breadcrumbLd}
+            />
             <div className="mx-auto max-w-7xl px-4 py-8">
                 <div className="grid gap-8 lg:grid-cols-2">
-                    <ProductGallery images={product.images} productName={product.name} />
+                    <ProductGallery
+                        images={product.images}
+                        productName={product.name}
+                    />
 
                     <div className="space-y-6">
                         {product.category && (
-                            <Badge variant="secondary">{product.category.name}</Badge>
+                            <Badge variant="secondary">
+                                {product.category.name}
+                            </Badge>
                         )}
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
-                            <p className="mt-1 text-sm text-muted-foreground">SKU: {selectedVariant?.sku ?? product.sku}</p>
+                            <h1 className="text-3xl font-bold tracking-tight">
+                                {product.name}
+                            </h1>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                                SKU: {selectedVariant?.sku ?? product.sku}
+                            </p>
                         </div>
 
                         <div className="flex items-baseline gap-3">
@@ -130,7 +178,9 @@ export default function ProductShow({ product }: Props) {
                         </div>
 
                         {product.short_description && (
-                            <p className="text-muted-foreground">{product.short_description}</p>
+                            <p className="text-muted-foreground">
+                                {product.short_description}
+                            </p>
                         )}
 
                         <VariantSelector
@@ -145,7 +195,9 @@ export default function ProductShow({ product }: Props) {
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    onClick={() => setQty((v) => Math.max(1, v - 1))}
+                                    onClick={() =>
+                                        setQty((v) => Math.max(1, v - 1))
+                                    }
                                     disabled={qty <= 1}
                                 >
                                     −
@@ -155,15 +207,32 @@ export default function ProductShow({ product }: Props) {
                                     min={1}
                                     max={availableStock}
                                     value={qty}
-                                    onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
+                                    onChange={(e) =>
+                                        setQty(
+                                            Math.max(
+                                                1,
+                                                parseInt(e.target.value) || 1,
+                                            ),
+                                        )
+                                    }
                                     className="w-20 text-center"
                                 />
                                 <Button
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    onClick={() => setQty((v) => Math.min(availableStock || 99, v + 1))}
-                                    disabled={availableStock !== 0 && qty >= availableStock}
+                                    onClick={() =>
+                                        setQty((v) =>
+                                            Math.min(
+                                                availableStock || 99,
+                                                v + 1,
+                                            ),
+                                        )
+                                    }
+                                    disabled={
+                                        availableStock !== 0 &&
+                                        qty >= availableStock
+                                    }
                                 >
                                     +
                                 </Button>
@@ -177,19 +246,29 @@ export default function ProductShow({ product }: Props) {
                             <Button
                                 size="lg"
                                 className="flex-1"
-                                disabled={outOfStock || (hasVariants && !selectedVariantId)}
+                                disabled={
+                                    outOfStock ||
+                                    (hasVariants && !selectedVariantId)
+                                }
                                 onClick={handleAddToCart}
                             >
-                                {outOfStock ? 'Stok Habis' : 'Tambah ke Keranjang'}
+                                {outOfStock
+                                    ? 'Stok Habis'
+                                    : 'Tambah ke Keranjang'}
                             </Button>
-                            <WishlistButton productId={product.id} isWishlisted={false} />
+                            <WishlistButton
+                                productId={product.id}
+                                isWishlisted={false}
+                            />
                         </div>
 
                         {hasVariants && !selectedVariantId && (
-                            <p className="text-sm text-destructive">Pilih varian terlebih dahulu.</p>
+                            <p className="text-sm text-destructive">
+                                Pilih varian terlebih dahulu.
+                            </p>
                         )}
 
-                        <div className="prose prose-sm max-w-none dark:prose-invert">
+                        <div className="prose prose-sm dark:prose-invert max-w-none">
                             <h3>Deskripsi</h3>
                             <p className="whitespace-pre-line text-muted-foreground">
                                 {product.description}
@@ -205,7 +284,10 @@ export default function ProductShow({ product }: Props) {
                             Ulasan ({product.reviews_count})
                         </h2>
                         <div className="flex items-center gap-2">
-                            <StarRating value={product.average_rating} size={18} />
+                            <StarRating
+                                value={product.average_rating}
+                                size={18}
+                            />
                             <span className="text-sm text-muted-foreground">
                                 {product.average_rating > 0
                                     ? `${product.average_rating.toFixed(1)} / 5`

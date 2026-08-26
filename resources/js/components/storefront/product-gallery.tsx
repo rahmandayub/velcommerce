@@ -32,6 +32,11 @@ export function ProductGallery({ images, productName }: Props) {
                     src={main.url}
                     alt={main.alt ?? productName}
                     className="h-full w-full object-cover"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                    width={800}
+                    height={800}
                 />
             </div>
             {images.length > 1 && (
@@ -52,6 +57,10 @@ export function ProductGallery({ images, productName }: Props) {
                                 src={img.url}
                                 alt={img.alt ?? `${productName} ${idx + 1}`}
                                 className="h-full w-full object-cover"
+                                loading="lazy"
+                                decoding="async"
+                                width={80}
+                                height={80}
                             />
                         </button>
                     ))}

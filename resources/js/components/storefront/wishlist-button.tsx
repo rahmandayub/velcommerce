@@ -33,7 +33,9 @@ export function WishlistButton({
                 onSuccess: () => {
                     setActive((prev) => !prev);
                     toast.success(
-                        active ? 'Dihapus dari wishlist.' : 'Ditambahkan ke wishlist.',
+                        active
+                            ? 'Dihapus dari wishlist.'
+                            : 'Ditambahkan ke wishlist.',
                     );
                 },
                 onError: () => {

@@ -15,7 +15,9 @@ export function Pagination({ links }: Props) {
     return (
         <div className="flex flex-wrap justify-center gap-1">
             {links.map((link, idx) => {
-                const label = link.label.replace('&laquo;', '«').replace('&raquo;', '»');
+                const label = link.label
+                    .replace('&laquo;', '«')
+                    .replace('&raquo;', '»');
 
                 return link.url ? (
                     <Button
@@ -24,7 +26,10 @@ export function Pagination({ links }: Props) {
                         size="sm"
                         asChild
                     >
-                        <Link href={link.url} dangerouslySetInnerHTML={{ __html: label }} />
+                        <Link
+                            href={link.url}
+                            dangerouslySetInnerHTML={{ __html: label }}
+                        />
                     </Button>
                 ) : (
                     <Button key={idx} variant="outline" size="sm" disabled>

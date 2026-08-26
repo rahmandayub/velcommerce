@@ -1,5 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ArrowRight, ShieldCheck, Truck, Undo2 } from 'lucide-react';
+import { SeoHead } from '@/components/seo-head';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,7 +11,16 @@ import { index as productsIndex } from '@/routes/products';
 export default function Welcome() {
     return (
         <StorefrontLayout>
-            <Head title="Velcommerce - Belanja Online Terpercaya" />
+            <SeoHead
+                title="Velcommerce - Belanja Online Terpercaya"
+                description="Temukan ribuan produk pilihan — fashion, elektronik, hingga kebutuhan harian dengan harga terbaik dan pengiriman super cepat ke seluruh Indonesia."
+                canonical={
+                    typeof window !== 'undefined'
+                        ? window.location.origin
+                        : undefined
+                }
+                type="website"
+            />
 
             {/* Hero */}
             <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10">
@@ -41,8 +51,7 @@ export default function Welcome() {
                         </div>
                         <div className="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground">
                             <span className="flex items-center gap-2">
-                                <Truck className="h-4 w-4" /> Gratis Ongkir
-                                *S&K
+                                <Truck className="h-4 w-4" /> Gratis Ongkir *S&K
                             </span>
                             <span className="flex items-center gap-2">
                                 <ShieldCheck className="h-4 w-4" /> Pembayaran
@@ -59,7 +68,11 @@ export default function Welcome() {
                                 src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop"
                                 alt="Hero fashion"
                                 className="h-full w-full object-cover"
-                                loading="lazy"
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
+                                width={800}
+                                height={600}
                             />
                         </div>
                         <Card className="absolute -bottom-6 -left-4 hidden w-64 shadow-lg md:block">
@@ -142,6 +155,9 @@ export default function Welcome() {
                                         alt={`Produk ${i}`}
                                         className="h-full w-full object-cover"
                                         loading="lazy"
+                                        decoding="async"
+                                        width={400}
+                                        height={400}
                                     />
                                 </div>
                                 <CardContent className="space-y-2 p-4">
@@ -152,13 +168,15 @@ export default function Welcome() {
                                         <span className="font-semibold">
                                             Rp{' '}
                                             {(
-                                                199000 + i * 50000
+                                                199000 +
+                                                i * 50000
                                             ).toLocaleString('id-ID')}
                                         </span>
                                         <span className="text-xs text-muted-foreground line-through">
                                             Rp{' '}
                                             {(
-                                                299000 + i * 50000
+                                                299000 +
+                                                i * 50000
                                             ).toLocaleString('id-ID')}
                                         </span>
                                     </div>
