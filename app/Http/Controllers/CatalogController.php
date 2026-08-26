@@ -18,6 +18,8 @@ class CatalogController extends Controller
         $products = Product::query()
             ->filtered($filters)
             ->with(['images', 'category', 'variants'])
+            ->withAvg('reviews', 'rating')
+            ->withCount(['reviews' => fn ($q) => $q->approved()])
             ->paginate($perPage)
             ->withQueryString()
             ->through(fn (Product $product): array => [
@@ -30,6 +32,8 @@ class CatalogController extends Controller
                 'is_featured' => (bool) $product->is_featured,
                 'stock' => $product->stock,
                 'total_stock' => $product->total_stock,
+                'average_rating' => round((float) ($product->reviews_avg_rating ?? 0), 2),
+                'reviews_count' => (int) $product->reviews_count,
                 'category' => $product->category ? [
                     'id' => $product->category->id,
                     'name' => $product->category->name,
@@ -60,10 +64,15 @@ class CatalogController extends Controller
                 ])->all(),
             ]);
 
+        $wishlistIds = $request->user()
+            ? $request->user()->wishlists()->pluck('product_id')->all()
+            : [];
+
         return Inertia::render('products/index', [
             'products' => $products,
             'categories' => $categories,
             'filters' => $filters,
+            'wishlistIds' => $wishlistIds,
         ]);
     }
 
@@ -73,7 +82,39 @@ class CatalogController extends Controller
             ->where('slug', $slug)
             ->where('is_active', true)
             ->with(['images', 'category', 'variants' => fn ($q) => $q->where('is_active', true)])
+            ->withAvg('reviews', 'rating')
+            ->withCount(['reviews' => fn ($q) => $q->approved()])
             ->firstOrFail();
+
+        $user = request()->user();
+        $userReview = null;
+        $canReview = false;
+
+        if ($user !== null) {
+            $userReview = $product->reviews()->where('user_id', $user->id)->first();
+            $canReview = $userReview === null
+                && $user->orders()
+                    ->whereIn('status', ['paid', 'shipped', 'completed'])
+                    ->whereHas('items', fn ($q) => $q->where('product_id', $product->id))
+                    ->exists();
+        }
+
+        $reviews = $product->reviews()
+            ->approved()
+            ->with('user')
+            ->latest()
+            ->paginate(10)
+            ->withQueryString()
+            ->through(fn ($review): array => [
+                'id' => $review->id,
+                'rating' => $review->rating,
+                'title' => $review->title,
+                'body' => $review->body,
+                'created_at' => $review->created_at->toIso8601String(),
+                'user' => [
+                    'name' => $review->user?->name,
+                ],
+            ]);
 
         return Inertia::render('products/show', [
             'product' => [
@@ -88,6 +129,8 @@ class CatalogController extends Controller
                 'stock' => $product->stock,
                 'total_stock' => $product->total_stock,
                 'is_active' => (bool) $product->is_active,
+                'average_rating' => round((float) ($product->reviews_avg_rating ?? 0), 2),
+                'reviews_count' => (int) $product->reviews_count,
                 'category' => $product->category ? [
                     'id' => $product->category->id,
                     'name' => $product->category->name,
@@ -109,6 +152,14 @@ class CatalogController extends Controller
                     'attributes' => $v->attributes,
                     'is_active' => (bool) $v->is_active,
                 ])->all(),
+                'reviews' => $reviews,
+                'can_review' => $canReview,
+                'user_review' => $userReview ? [
+                    'id' => $userReview->id,
+                    'rating' => $userReview->rating,
+                    'title' => $userReview->title,
+                    'body' => $userReview->body,
+                ] : null,
             ],
         ]);
     }

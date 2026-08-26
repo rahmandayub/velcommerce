@@ -99,6 +99,22 @@ class Product extends Model
     }
 
     /**
+     * @return HasMany<Review, $this>
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * @return HasMany<Wishlist, $this>
+     */
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    /**
      * @return HasMany<CartItem, $this>
      */
     public function cartItems(): HasMany
@@ -121,6 +137,22 @@ class Product extends Model
         }
 
         return (int) $this->stock;
+    }
+
+    /**
+     * Average rating across approved reviews (0 when none).
+     */
+    public function getAverageRatingAttribute(): float
+    {
+        return round((float) $this->reviews()->approved()->avg('rating') ?? 0, 2);
+    }
+
+    /**
+     * Number of approved reviews.
+     */
+    public function getApprovedReviewsCountAttribute(): int
+    {
+        return $this->reviews()->approved()->count();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Cart;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -48,6 +49,9 @@ class HandleInertiaRequests extends Middleware
                 'status' => fn (): ?string => $request->session()->get('status'),
             ],
             'cartCount' => fn (): int => $this->resolveCartCount($request),
+            'wishlistCount' => fn (): int => $request->user()
+                ? (int) Wishlist::where('user_id', $request->user()->id)->count()
+                : 0,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

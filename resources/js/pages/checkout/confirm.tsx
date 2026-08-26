@@ -1,8 +1,16 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { CouponInput } from '@/components/storefront/coupon-input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import StorefrontLayout from '@/layouts/storefront-layout';
 import { formatIDR } from '@/lib/format';
+
+type AppliedCoupon = {
+    code: string;
+    type: 'percent' | 'fixed';
+    value: number;
+    discount: number;
+};
 
 type Props = {
     address: {
@@ -16,11 +24,13 @@ type Props = {
         items: { id: number; product_name: string | null; variant_name: string | null; price: number; quantity: number; subtotal: number; image: string | null }[];
         subtotal: number;
         shipping_cost: number;
+        discount: number;
         total: number;
     };
+    coupon: AppliedCoupon | null;
 };
 
-export default function CheckoutConfirm({ address, cart }: Props) {
+export default function CheckoutConfirm({ address, cart, coupon }: Props) {
     function placeOrder() {
         router.post('/checkout', { address_id: address.id });
     }
@@ -83,6 +93,13 @@ export default function CheckoutConfirm({ address, cart }: Props) {
                                 <span>Ongkir</span>
                                 <span>{formatIDR(cart.shipping_cost)}</span>
                             </div>
+                            <CouponInput coupon={coupon} />
+                            {cart.discount > 0 && (
+                                <div className="flex justify-between text-sm text-primary">
+                                    <span>Diskon {coupon ? `(${coupon.code})` : ''}</span>
+                                    <span>-{formatIDR(cart.discount)}</span>
+                                </div>
+                            )}
                             <div className="flex justify-between border-t pt-3 font-semibold">
                                 <span>Total</span>
                                 <span>{formatIDR(cart.total)}</span>

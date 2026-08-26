@@ -4,6 +4,7 @@ namespace App\Services\Payment;
 
 use App\Contracts\PaymentGateway;
 use App\Models\Order;
+use App\Notifications\PaymentStatusNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -37,10 +38,12 @@ class MockGateway implements PaymentGateway
 
         if ($outcome === 'paid') {
             $order->markPaid($reference);
+            $order->user->notify(new PaymentStatusNotification($order, 'paid'));
 
             return;
         }
 
         $order->markFailed($reference);
+        $order->user->notify(new PaymentStatusNotification($order, 'failed'));
     }
 }

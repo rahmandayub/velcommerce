@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Models\Order;
+use App\Notifications\OrderStatusUpdatedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -102,6 +103,10 @@ class OrderController extends Controller
             OrderStatus::Cancelled => $order->cancel() ?: abort(422, 'Cannot cancel this order.'),
             default => null,
         };
+
+        if (in_array($target, [OrderStatus::Shipped, OrderStatus::Completed, OrderStatus::Cancelled], true)) {
+            $order->user->notify(new OrderStatusUpdatedNotification($order, $target));
+        }
 
         return back()->with('success', "Order status updated to {$target->value}.");
     }

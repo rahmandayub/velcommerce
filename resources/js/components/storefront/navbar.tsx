@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Menu, Search, ShoppingCart } from 'lucide-react';
+import { Heart, Menu, Search, ShoppingCart } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,7 @@ import { dashboard, login, register } from '@/routes';
 import { home } from '@/routes';
 import { index as cartIndex } from '@/routes/cart';
 import { index as productsIndex } from '@/routes/products';
+import { index as wishlistIndex } from '@/routes/wishlist';
 import type { User } from '@/types';
 
 type NavItem = {
@@ -41,9 +42,11 @@ export function Navbar() {
     const props = page.props as unknown as {
         auth: { user: User | null };
         cartCount: number;
+        wishlistCount: number;
     };
     const { auth } = props;
     const cartCount = (props.cartCount as number) ?? 0;
+    const wishlistCount = (props.wishlistCount as number) ?? 0;
     const getInitials = useInitials();
 
     function onSearchSubmit(value: string) {
@@ -166,6 +169,24 @@ export function Navbar() {
                         aria-label="Search"
                     >
                         <Search className="h-5 w-5" />
+                    </Button>
+
+                    {/* Wishlist */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="relative"
+                        aria-label="Wishlist"
+                        asChild
+                    >
+                        <Link href={wishlistIndex()}>
+                            <Heart className="h-5 w-5" />
+                            {wishlistCount > 0 && (
+                                <Badge className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px]">
+                                    {wishlistCount}
+                                </Badge>
+                            )}
+                        </Link>
                     </Button>
 
                     {/* Cart */}

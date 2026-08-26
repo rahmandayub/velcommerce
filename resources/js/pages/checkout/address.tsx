@@ -1,5 +1,6 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { CouponInput } from '@/components/storefront/coupon-input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -32,6 +33,13 @@ type CartItem = {
     image: string | null;
 };
 
+type AppliedCoupon = {
+    code: string;
+    type: 'percent' | 'fixed';
+    value: number;
+    discount: number;
+};
+
 type Props = {
     addresses: Address[];
     cart: {
@@ -39,9 +47,10 @@ type Props = {
         subtotal: number;
         shipping_cost: number;
     };
+    coupon: AppliedCoupon | null;
 };
 
-export default function CheckoutAddress({ addresses, cart }: Props) {
+export default function CheckoutAddress({ addresses, cart, coupon }: Props) {
     const [selectedId, setSelectedId] = useState<number | null>(
         addresses.find((a) => a.is_default)?.id ?? addresses[0]?.id ?? null,
     );
@@ -211,9 +220,25 @@ export default function CheckoutAddress({ addresses, cart }: Props) {
                                 <span>Ongkir</span>
                                 <span>{formatIDR(cart.shipping_cost)}</span>
                             </div>
+                            <div className="border-t pt-3">
+                                <CouponInput coupon={coupon} />
+                            </div>
+                            {coupon && (
+                                <div className="flex justify-between text-sm text-primary">
+                                    <span>Diskon ({coupon.code})</span>
+                                    <span>-{formatIDR(coupon.discount)}</span>
+                                </div>
+                            )}
                             <div className="flex justify-between font-semibold">
                                 <span>Total</span>
-                                <span>{formatIDR(cart.subtotal + cart.shipping_cost)}</span>
+                                <span>
+                                    {formatIDR(
+                                        Math.max(
+                                            0,
+                                            cart.subtotal + cart.shipping_cost - (coupon?.discount ?? 0),
+                                        ),
+                                    )}
+                                </span>
                             </div>
                         </CardContent>
                     </Card>
