@@ -73,7 +73,7 @@ erDiagram
 ## 🚀 Instalasi (lokal)
 
 ```bash
-git clone https://github.com/velcommerce/velcommerce.git
+git clone https://github.com/rahmandayub/velcommerce.git
 cd velcommerce
 composer setup          # install, key:generate, migrate, npm install + build
 php artisan db:seed     # RoleSeeder + AdminUserSeeder + 20 produk + kategori + cart demo
