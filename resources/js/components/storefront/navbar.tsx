@@ -21,6 +21,8 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { dashboard, login, register } from '@/routes';
 import { home } from '@/routes';
+import { index as cartIndex } from '@/routes/cart';
+import { index as productsIndex } from '@/routes/products';
 import type { User } from '@/types';
 
 type NavItem = {
@@ -30,7 +32,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
     { title: 'Beranda', href: home().url },
-    { title: 'Katalog', href: '#' },
+    { title: 'Katalog', href: productsIndex().url },
     { title: 'Tentang', href: '#' },
 ];
 
@@ -43,6 +45,16 @@ export function Navbar() {
     const { auth } = props;
     const cartCount = (props.cartCount as number) ?? 0;
     const getInitials = useInitials();
+
+    function onSearchSubmit(value: string) {
+        const q = value.trim();
+
+        if (q) {
+            window.location.href = productsIndex({ query: { q } }).url;
+        } else {
+            window.location.href = productsIndex().url;
+        }
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -100,6 +112,11 @@ export function Navbar() {
                                     <Input
                                         placeholder="Cari produk..."
                                         className="pl-8"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                onSearchSubmit((e.target as HTMLInputElement).value);
+                                            }
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -135,6 +152,11 @@ export function Navbar() {
                         <Input
                             placeholder="Cari produk..."
                             className="w-[200px] pl-8 lg:w-[280px]"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    onSearchSubmit((e.target as HTMLInputElement).value);
+                                }
+                            }}
                         />
                     </div>
                     <Button
@@ -154,7 +176,7 @@ export function Navbar() {
                         aria-label="Shopping cart"
                         asChild
                     >
-                        <Link href="#">
+                        <Link href={cartIndex()}>
                             <ShoppingCart className="h-5 w-5" />
                             {cartCount > 0 && (
                                 <Badge className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px]">

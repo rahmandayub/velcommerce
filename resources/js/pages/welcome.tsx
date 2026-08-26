@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import StorefrontLayout from '@/layouts/storefront-layout';
 import { dashboard, login, register } from '@/routes';
+import { index as productsIndex } from '@/routes/products';
 
 export default function Welcome() {
     return (
@@ -29,7 +30,7 @@ export default function Welcome() {
                         </p>
                         <div className="flex flex-wrap gap-3">
                             <Button size="lg" asChild>
-                                <Link href="#">
+                                <Link href={productsIndex()}>
                                     Jelajahi Katalog{' '}
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </Link>
