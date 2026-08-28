@@ -8,7 +8,7 @@ import StorefrontLayout from '@/layouts/storefront-layout';
 import { dashboard, login, register } from '@/routes';
 import { index as productsIndex } from '@/routes/products';
 
-export default function Welcome() {
+export default function Home() {
     return (
         <StorefrontLayout>
             <SeoHead
